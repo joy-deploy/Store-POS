@@ -3,13 +3,12 @@ const setupEvents = require('./installers/setupEvents')
     return;
  }
 
-const server = require('./server');
 const {app, BrowserWindow, ipcMain, screen} = require('electron');
 const path = require('path')
-
-const contextMenu = require('electron-context-menu');
+const remoteMain = require('@electron/remote/main');
 
 let mainWindow
+let server;
 
 function createWindow() {
   var primaryDisplay = screen.getPrimaryDisplay();
@@ -18,15 +17,17 @@ function createWindow() {
     width: screenDimensions.width,
     height: screenDimensions.height,
     frame: false,
-    minWidth: 1200, 
+    minWidth: 1200,
     minHeight: 750,
-    
+
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false
     },
   });
+
+  remoteMain.enable(mainWindow.webContents);
 
   mainWindow.maximize();
   mainWindow.show();
@@ -35,13 +36,24 @@ function createWindow() {
     `file://${path.join(__dirname, 'index.html')}`
   )
 
+  // Open DevTools with F12
+  mainWindow.webContents.on('before-input-event', (event, input) => {
+    if (input.key === 'F12') {
+      mainWindow.webContents.toggleDevTools();
+    }
+  });
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
 }
 
 
-app.on('ready', createWindow)
+app.on('ready', () => {
+  server = require('./server');
+  remoteMain.initialize();
+  createWindow();
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -64,29 +76,4 @@ ipcMain.on('app-quit', (evt, arg) => {
 
 ipcMain.on('app-reload', (event, arg) => {
   mainWindow.reload();
-});
-
-
-
-contextMenu({
-  prepend: (params, browserWindow) => [
-     
-      {label: 'DevTools',
-       click(item, focusedWindow){
-        focusedWindow.toggleDevTools();
-      }
-    },
-     { 
-      label: "Reload", 
-        click() {
-          mainWindow.reload();
-      } 
-    // },
-    // {  label: 'Quit',  click:  function(){
-    //    mainWindow.destroy();
-    //     mainWindow.quit();
-    // } 
-  }  
-  ],
-
 });

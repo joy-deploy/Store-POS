@@ -3,13 +3,15 @@ let server = require("http").Server(app);
 let bodyParser = require("body-parser");
 let Datastore = require("nedb");
 let Inventory = require("./inventory");
+const path = require('path');
+const { dbPath } = require('./config');
 
 app.use(bodyParser.json());
 
 module.exports = app;
- 
+
 let transactionsDB = new Datastore({
-  filename: process.env.APPDATA+"/POS/server/databases/transactions.db",
+  filename: path.join(dbPath, 'transactions.db'),
   autoload: true
 });
 

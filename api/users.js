@@ -3,13 +3,16 @@ const server = require( "http" ).Server( app );
 const bodyParser = require( "body-parser" );
 const Datastore = require( "nedb" );
 const btoa = require('btoa');
+const path = require('path');
+const { dbPath } = require('./config');
+
 app.use( bodyParser.json() );
 
 module.exports = app;
 
- 
+
 let usersDB = new Datastore( {
-    filename: process.env.APPDATA+"/POS/server/databases/users.db",
+    filename: path.join(dbPath, 'users.db'),
     autoload: true
 } );
 

@@ -5,12 +5,14 @@ const Datastore = require( "nedb" );
 const multer = require("multer");
 const fileUpload = require('express-fileupload');
 const fs = require('fs');
+const path = require('path');
+const { uploadsPath, dbPath } = require('./config');
 
 
 const storage = multer.diskStorage({
-    destination:  process.env.APPDATA+'/POS/uploads',
+    destination: uploadsPath,
     filename: function(req, file, callback){
-        callback(null, Date.now() + '.jpg'); // 
+        callback(null, Date.now() + '.jpg');
     }
 });
 
@@ -20,9 +22,9 @@ app.use( bodyParser.json() );
 
 module.exports = app;
 
- 
+
 let settingsDB = new Datastore( {
-    filename: process.env.APPDATA+"/POS/server/databases/settings.db",
+    filename: path.join(dbPath, 'settings.db'),
     autoload: true
 } );
 
@@ -56,9 +58,9 @@ app.post( "/post", upload.single('imagename'), function ( req, res ) {
     }
 
     if(req.body.remove == 1) {
-        const path = process.env.APPDATA+"/POS/uploads/"+ req.body.img;
+        const imagePath = path.join(uploadsPath, req.body.img);
         try {
-          fs.unlinkSync(path)
+          fs.unlinkSync(imagePath)
         } catch(err) {
           console.error(err)
         }

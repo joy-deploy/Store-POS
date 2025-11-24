@@ -211,86 +211,93 @@
    <div id="pos_view">
       <div class="row">
           <div class="col-md-4">
-              <div class="card-box" id="card-box">
-                  <div class="col-md-12">
+              <div class="card-box" id="card-box" style="padding: 20px;">
+                  <!-- Customer Selection -->
+                  <div class="form-group">
+                      <label style="font-weight: 600; margin-bottom: 8px;">Customer</label>
                       <div class="row">
                           <div class="col-md-10">
-                              <select name="" id="customer" class="form-control">
-                          </select>
+                              <select name="" id="customer" class="form-control" style="height: 40px;">
+                              </select>
                           </div>
                           <div class="col-md-2">
-                              <button data-toggle="modal" data-target="#newCustomer" class="btn btn-success"><i class="fa fa-plus"></i></button>
+                              <button data-toggle="modal" data-target="#newCustomer" class="btn btn-success" style="height: 40px; width: 100%;"><i class="fa fa-plus"></i></button>
                           </div>
                       </div>
-                      <div class="input-group m-t-5">
-                          <form action="" id="searchBarCode">
-                              <input type="text" required id="skuCode" name="skuCode" class="form-control" placeholder="Scan barcode or type the number then hit enter" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                  </div>
+
+                  <!-- Barcode Scanner -->
+                  <div class="form-group">
+                      <label style="font-weight: 600; margin-bottom: 8px;">Scan Product</label>
+                      <div class="input-group">
+                          <form action="" id="searchBarCode" style="width: 100%;">
+                              <input type="text" required id="skuCode" name="skuCode" class="form-control" style="height: 40px;" placeholder="Scan barcode or enter product code" aria-describedby="basic-addon2" autofocus>
                               <input type="submit" style="display:none;">
                           </form>
-                          <span class="input-group-addon" id="basic-addon2">
+                          <span class="input-group-addon" id="basic-addon2" style="height: 40px; padding: 10px 12px;">
                               <i class="glyphicon glyphicon-ok"></i>
                           </span>
                       </div>
                   </div>
-                  <div>
-                      <table class="table m-0" id="cartTable">
-  
-                          <thead>
+
+                  <!-- Cart Table -->
+                  <div style="margin-top: 20px; margin-bottom: 20px; height: calc(100vh - 525px); overflow-y: auto;">
+                      <table class="table table-striped" id="cartTable" style="margin-bottom: 0; table-layout: fixed;">
+                          <thead style="background-color: #f5f5f5;">
                           <tr>
-                              <th>#</th>
-                              <th width="150px">Item</th>
-                              <th width="170px">Qty</th>
-                              <th>Price</th>
-                              <th width="5px">
+                              <th style="padding: 8px; width: 40px;">#</th>
+                              <th style="padding: 8px;">Item</th>
+                              <th style="padding: 8px; text-align: center; width: 60px;">Qty</th>
+                              <th style="padding: 8px; text-align: right; width: 100px;">Price</th>
+                              <th style="padding: 8px; text-align: center; width: 50px;">
                                   <button onclick="$(this).cancelOrder()" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button>
                               </th>
                           </tr>
                           </thead>
-                          <tbody>
-  
-  
-                          </tbody>
-  
+                          <tbody></tbody>
                       </table>
                   </div>
-  
-                  <hr>
-                 <div class="m-t-5">
-                     <div class="row">
-                         <div class="col-md-3">Total Item(s)</div>
-                         <div class="col-md-3">: <sapn id="total">0</sapn></div>
-                         <div class="col-md-3">Price :</div>
-                         <div class="col-md-3">: <span id="price">0.0</span></div>
-                     </div>
-                     <div class="row">
-                         <div class="col-md-3">Discount</div>
-                         <div class="col-md-3"><input class="form-control" type="number" id="inputDiscount" oninput="$(this).calculateCart();"></div>
-                         <div class="col-md-3">Gross Price (inc <span id="taxInfo"></span>% Tax)</div>
-                         <div class="col-md-3"><h3 id="gross_price">0.00</h3></div>
-                     </div>
-  
-                 </div>
-  
-                  <div class="button-list pull-right">
 
-                    <button onclick="$(this).submitDueOrder(3);" type="button" class="btn btn-info waves-effect waves-light">
-                        <i class="fa fa-print"></i> 
-                    </button>
+                  <hr style="margin: 20px 0;">
 
-                      <button  onclick="$(this).cancelOrder()" type="button" class="btn btn-danger waves-effect waves-light">
-                          <span class="btn-label"><i class="fa fa-ban"></i></span>Cancel
-                      </button>
-  
-                      <button type="button" id="hold" class="btn btn-default waves-effect waves-light">
-                          <span class="btn-label"><i class="fa fa-hand-paper-o"></i></span>Hold
-                      </button>
-  
-                      <button type="button" id="payButton" class="btn btn-success waves-effect waves-light">
-                          <span class="btn-label"><i class="fa fa-money"></i></span>Pay
-                      </button>
+                  <!-- Order Summary -->
+                  <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                      <div class="row" style="margin-bottom: 15px;">
+                          <div class="col-md-6" style="font-weight: 600; font-size: 15px;">Total Items:</div>
+                          <div class="col-md-6 text-right"><span id="total" style="font-size: 18px; font-weight: 600;">0</span></div>
+                      </div>
+                      <hr style="margin: 15px 0;">
+                      <div class="row">
+                          <div class="col-md-6" style="font-weight: 700; font-size: 17px;">Total (inc <span id="taxInfo"></span>% Tax):</div>
+                          <div class="col-md-6 text-right">
+                              <h3 id="gross_price" style="margin: 0; color: #5fbeaa; font-weight: 700;">0.00</h3>
+                          </div>
+                      </div>
                   </div>
-                  <hr>
-  
+
+                  <!-- Action Buttons -->
+                  <div class="row" style="margin-top: 20px;">
+                      <div class="col-md-3">
+                          <button onclick="$(this).submitDueOrder(3);" type="button" class="btn btn-info btn-block waves-effect waves-light" style="padding: 10px;" title="Print">
+                              <i class="fa fa-print"></i>
+                          </button>
+                      </div>
+                      <div class="col-md-3">
+                          <button onclick="$(this).cancelOrder()" type="button" class="btn btn-danger btn-block waves-effect waves-light" style="padding: 10px;" title="Cancel">
+                              <i class="fa fa-ban"></i>
+                          </button>
+                      </div>
+                      <div class="col-md-3">
+                          <button type="button" id="hold" class="btn btn-warning btn-block waves-effect waves-light" style="padding: 10px;" title="Hold">
+                              <i class="fa fa-hand-paper-o"></i>
+                          </button>
+                      </div>
+                      <div class="col-md-3">
+                          <button type="button" id="payButton" class="btn btn-success btn-block waves-effect waves-light" style="padding: 10px; font-weight: 600;">
+                              PAY
+                          </button>
+                      </div>
+                  </div>
               </div>
           </div>
           <div class="col-md-8">
@@ -546,6 +553,11 @@
                         <input type="hidden" name="id" id="product_id">
                         <input type="hidden" name="img" id="img">
                         <input type="hidden" name="remove" id="remove_img">
+                        <div class="form-group">
+                            <label for="barcode">Barcode / SKU <span class="text-danger">*</span></label>
+                            <input type="text" required="required" name="barcode" placeholder="Scan or enter barcode" class="form-control" id="productBarcode" autofocus>
+                            <small class="text-muted">Scan the product barcode or enter manually</small>
+                        </div>
                         <div class="form-group">
                             <label for="userName">Category</label>
                             <select name="category" class="form-control" id="category"></select>

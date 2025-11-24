@@ -1,6 +1,3 @@
-const electron = require('electron')
-const app = electron.app
-
 module.exports = {
 handleSquirrelEvent: function() {
  if (process.argv.length === 1) {
@@ -40,7 +37,7 @@ switch (squirrelEvent) {
  // Install desktop and start menu shortcuts
  spawnUpdate(['--createShortcut', exeName]);
 
- setTimeout(app.quit, 1000);
+ setTimeout(() => require('electron').app.quit(), 1000);
  return true;
 
  case '--squirrel-uninstall':
@@ -50,7 +47,7 @@ switch (squirrelEvent) {
  // Remove desktop and start menu shortcuts
  spawnUpdate(['--removeShortcut', exeName]);
 
- setTimeout(app.quit, 1000);
+ setTimeout(() => require('electron').app.quit(), 1000);
  return true;
 
  case '--squirrel-obsolete':
@@ -58,7 +55,7 @@ switch (squirrelEvent) {
  // we update to the new version - it's the opposite of
  // --squirrel-updated
 
- app.quit();
+ require('electron').app.quit();
  return true;
 }
 }

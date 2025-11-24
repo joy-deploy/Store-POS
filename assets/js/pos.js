@@ -30,7 +30,7 @@ let Swal = require('sweetalert2');
 let { ipcRenderer } = require('electron');
 let dotInterval = setInterval(function () { $(".dot").text('.') }, 3000);
 let Store = require('electron-store');
-const remote = require('electron').remote;
+const remote = require('@electron/remote');
 const app = remote.app;
 let img_path = app.getPath('appData') + '/POS/uploads/';
 let api = 'http://' + host + ':' + port + '/api/';
@@ -120,11 +120,7 @@ if (auth == undefined) {
 
 } else {
 
-    $('#loading').show();
-
-    setTimeout(function () {
-        $('#loading').hide();
-    }, 2000);
+    $('#loading').css('display', 'flex');
 
     platform = storage.get('settings');
 
@@ -219,12 +215,12 @@ if (auth == undefined) {
                     }
 
                     let item_info = `<div class="col-lg-2 box ${item.category}"
-                                onclick="$(this).addToCart(${item._id}, ${item.quantity}, ${item.stock})">
-                            <div class="widget-panel widget-style-2 ">                    
-                            <div id="image"><img src="${item.img == "" ? "./assets/images/default.jpg" : img_path + item.img}" id="product_img" alt=""></div>                    
+                                onclick="$(this).addToCart('${item._id}', ${item.quantity}, ${item.stock})">
+                            <div class="widget-panel widget-style-2 ">
+                            <div id="image"><img src="${item.img == "" ? "./assets/images/default.jpg" : img_path + item.img}" id="product_img" alt="" loading="lazy"></div>
                                         <div class="text-muted m-t-5 text-center">
-                                        <div class="name" id="product_name">${item.name}</div> 
-                                        <span class="sku">${item.sku}</span>
+                                        <div class="name" id="product_name">${item.name}</div>
+                                        <span class="sku">${item._id}</span>
                                         <span class="stock">STOCK </span><span class="count">${item.stock == 1 ? item.quantity : 'N/A'}</span></div>
                                         <sp class="text-success text-center"><b data-plugin="counterup">${settings.symbol + item.price}</b> </sp>
                             </div>
@@ -240,6 +236,9 @@ if (auth == undefined) {
 
                     $('#categories').append(`<button type="button" id="${category}" class="btn btn-categories btn-white waves-effect waves-light">${c.length > 0 ? c[0].name : ''}</button> `);
                 });
+
+                // Hide loading screen after products are loaded
+                $('#loading').hide();
 
             });
 
@@ -280,9 +279,19 @@ if (auth == undefined) {
 
             if (stock == 1) {
                 if (count > 0) {
-                    $.get(api + 'inventory/product/' + id, function (data) {
-                        $(this).addProductToCart(data);
-                    });
+                    $.get(api + 'inventory/product/' + id)
+                        .done(function (data) {
+                            $(this).addProductToCart(data);
+                            $("#skuCode").focus();
+                        })
+                        .fail(function (jqXHR) {
+                            if (jqXHR.status === 404) {
+                                Swal.fire('Product Not Found', 'The product could not be found in the database', 'error');
+                            } else {
+                                Swal.fire('Error', 'Failed to load product: ' + (jqXHR.responseText || 'Unknown error'), 'error');
+                            }
+                            $("#skuCode").focus();
+                        });
                 }
                 else {
                     Swal.fire(
@@ -290,12 +299,23 @@ if (auth == undefined) {
                         'This item is currently unavailable',
                         'info'
                     );
+                    $("#skuCode").focus();
                 }
             }
             else {
-                $.get(api + 'inventory/product/' + id, function (data) {
-                    $(this).addProductToCart(data);
-                });
+                $.get(api + 'inventory/product/' + id)
+                    .done(function (data) {
+                        $(this).addProductToCart(data);
+                        $("#skuCode").focus();
+                    })
+                    .fail(function (jqXHR) {
+                        if (jqXHR.status === 404) {
+                            Swal.fire('Product Not Found', 'The product could not be found in the database', 'error');
+                        } else {
+                            Swal.fire('Error', 'Failed to load product: ' + (jqXHR.responseText || 'Unknown error'), 'error');
+                        }
+                        $("#skuCode").focus();
+                    });
             }
 
         };
@@ -328,7 +348,8 @@ if (auth == undefined) {
                         $("#basic-addon2").empty();
                         $("#basic-addon2").append(
                             $('<i>', { class: 'glyphicon glyphicon-ok' })
-                        )
+                        );
+                        $("#skuCode").focus();
                     }
                     else if (data.quantity < 1) {
                         Swal.fire(
@@ -336,6 +357,8 @@ if (auth == undefined) {
                             'This item is currently unavailable',
                             'info'
                         );
+                        $("#searchBarCode").get(0).reset();
+                        $("#skuCode").focus();
                     }
                     else {
 
@@ -349,7 +372,8 @@ if (auth == undefined) {
                         $("#basic-addon2").empty();
                         $("#basic-addon2").append(
                             $('<i>', { class: 'glyphicon glyphicon-ok' })
-                        )
+                        );
+                        $("#skuCode").focus();
                     }
 
                 }, error: function (data) {
@@ -394,19 +418,44 @@ if (auth == undefined) {
 
 
         $.fn.addProductToCart = function (data) {
+            if (!data || !data._id) {
+                Swal.fire('Error', 'Product not found or invalid product data', 'error');
+                return;
+            }
+
+            if (!data.name || !data.price) {
+                Swal.fire('Error', 'Product is missing required information (name or price)', 'error');
+                return;
+            }
+
             item = {
                 id: data._id,
                 product_name: data.name,
-                sku: data.sku,
-                price: data.price,
+                sku: data._id,
+                price: parseFloat(data.price) || 0,
                 quantity: 1
             };
 
             if ($(this).isExist(item)) {
-                $(this).qtIncrement(index);
+                // Product already in cart - increment quantity
+                let cartItem = cart[index];
+
+                // Check stock if tracking is enabled
+                if (data.stock == 1 && data.quantity) {
+                    if (cartItem.quantity < data.quantity) {
+                        cartItem.quantity += 1;
+                        $(this).renderTable(cart);
+                    } else {
+                        Swal.fire('No more stock!', 'You have already added all the available stock.', 'info');
+                    }
+                } else {
+                    // No stock tracking - just increment
+                    cartItem.quantity += 1;
+                    $(this).renderTable(cart);
+                }
             } else {
                 cart.push(item);
-                $(this).renderTable(cart)
+                $(this).renderTable(cart);
             }
         }
 
@@ -430,32 +479,33 @@ if (auth == undefined) {
 
         $.fn.calculateCart = function () {
             let total = 0;
+            let totalItems = 0;
             let grossTotal;
-            $('#total').text(cart.length);
+            const symbol = settings && settings.symbol ? settings.symbol : '$';
+
+            // Calculate total items (sum of all quantities)
             $.each(cart, function (index, data) {
-                total += data.quantity * data.price;
+                const price = parseFloat(data.price) || 0;
+                const qty = parseInt(data.quantity) || 0;
+                totalItems += qty;
+                total += qty * price;
             });
-            total = total - $("#inputDiscount").val();
-            $('#price').text(settings.symbol + total.toFixed(2));
+
+            $('#total').text(totalItems);
 
             subTotal = total;
 
-            if ($("#inputDiscount").val() >= total) {
-                $("#inputDiscount").val(0);
-            }
-
-            if (settings.charge_tax) {
+            if (settings && settings.charge_tax) {
                 totalVat = ((total * vat) / 100);
                 grossTotal = total + totalVat
             }
-
             else {
                 grossTotal = total;
             }
 
             orderTotal = grossTotal.toFixed(2);
 
-            $("#gross_price").text(settings.symbol + grossTotal.toFixed(2));
+            $("#gross_price").text(symbol + grossTotal.toFixed(2));
             $("#payablePrice").val(grossTotal);
         };
 
@@ -465,101 +515,43 @@ if (auth == undefined) {
             $('#cartTable > tbody').empty();
             $(this).calculateCart();
             $.each(cartList, function (index, data) {
-                $('#cartTable > tbody').append(
-                    $('<tr>').append(
-                        $('<td>', { text: index + 1 }),
-                        $('<td>', { text: data.product_name }),
-                        $('<td>').append(
-                            $('<div>', { class: 'input-group' }).append(
-                                $('<div>', { class: 'input-group-btn btn-xs' }).append(
-                                    $('<button>', {
-                                        class: 'btn btn-default btn-xs',
-                                        onclick: '$(this).qtDecrement(' + index + ')'
-                                    }).append(
-                                        $('<i>', { class: 'fa fa-minus' })
-                                    )
-                                ),
-                                $('<input>', {
-                                    class: 'form-control',
-                                    type: 'number',
-                                    value: data.quantity,
-                                    onInput: '$(this).qtInput(' + index + ')'
-                                }),
-                                $('<div>', { class: 'input-group-btn btn-xs' }).append(
-                                    $('<button>', {
-                                        class: 'btn btn-default btn-xs',
-                                        onclick: '$(this).qtIncrement(' + index + ')'
-                                    }).append(
-                                        $('<i>', { class: 'fa fa-plus' })
-                                    )
-                                )
-                            )
-                        ),
-                        $('<td>', { text: settings.symbol + (data.price * data.quantity).toFixed(2) }),
-                        $('<td>').append(
-                            $('<button>', {
-                                class: 'btn btn-danger btn-xs',
-                                onclick: '$(this).deleteFromCart(' + index + ')'
-                            }).append(
-                                $('<i>', { class: 'fa fa-times' })
-                            )
-                        )
-                    )
-                )
+                const symbol = settings && settings.symbol ? settings.symbol : '$';
+                const itemPrice = parseFloat(data.price) || 0;
+                const itemQty = parseInt(data.quantity) || 1;
+                const totalPrice = (itemPrice * itemQty).toFixed(2);
+
+                // Simple table row - just show quantity as text, X button to decrement
+                let rowHtml = `
+                    <tr>
+                        <td style="padding: 8px; width: 40px; vertical-align: middle;">${index + 1}</td>
+                        <td style="padding: 8px; vertical-align: middle;">${data.product_name}</td>
+                        <td style="padding: 8px; width: 60px; vertical-align: middle; text-align: center; font-weight: 600; font-size: 16px;">${itemQty}</td>
+                        <td style="padding: 8px; width: 100px; vertical-align: middle; text-align: right; font-weight: 600;">${symbol}${totalPrice}</td>
+                        <td style="padding: 8px; width: 50px; text-align: center; vertical-align: middle;">
+                            <button class="btn btn-danger btn-xs" onclick="$(this).decrementFromCart(${index})">
+                                <i class="fa fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+
+                $('#cartTable > tbody').append(rowHtml);
             })
         };
 
 
-        $.fn.deleteFromCart = function (index) {
-            cart.splice(index, 1);
-            $(this).renderTable(cart);
-
-        }
-
-
-        $.fn.qtIncrement = function (i) {
-
-            item = cart[i];
-
-            let product = allProducts.filter(function (selected) {
-                return selected._id == parseInt(item.id);
-            });
-
-            if (product[0].stock == 1) {
-                if (item.quantity < product[0].quantity) {
-                    item.quantity += 1;
-                    $(this).renderTable(cart);
-                }
-
-                else {
-                    Swal.fire(
-                        'No more stock!',
-                        'You have already added all the available stock.',
-                        'info'
-                    );
-                }
-            }
-            else {
-                item.quantity += 1;
-                $(this).renderTable(cart);
-            }
-
-        }
-
-
-        $.fn.qtDecrement = function (i) {
+        // X button decrements quantity by 1, or removes item if quantity is 1
+        $.fn.decrementFromCart = function (index) {
+            item = cart[index];
             if (item.quantity > 1) {
-                item = cart[i];
                 item.quantity -= 1;
                 $(this).renderTable(cart);
+            } else {
+                // Remove item entirely if quantity is 1
+                cart.splice(index, 1);
+                $(this).renderTable(cart);
             }
-        }
-
-
-        $.fn.qtInput = function (i) {
-            item = cart[i];
-            item.quantity = $(this).val();
-            $(this).renderTable(cart);
+            $("#skuCode").focus();
         }
 
 
@@ -586,7 +578,11 @@ if (auth == undefined) {
                             'Cleared!',
                             'All items have been removed.',
                             'success'
-                        )
+                        ).then(() => {
+                            $("#skuCode").focus();
+                        });
+                    } else {
+                        $("#skuCode").focus();
                     }
                 });
             }
@@ -1149,6 +1145,11 @@ if (auth == undefined) {
             $('#current_img').text('');
         });
 
+        // Auto-focus barcode field when modal opens
+        $('#newProduct').on('shown.bs.modal', function () {
+            $('#productBarcode').focus();
+        });
+
 
         $('#saveProduct').submit(function (e) {
             e.preventDefault();
@@ -1240,6 +1241,7 @@ if (auth == undefined) {
             }).prop("selected", true);
 
             $('#productName').val(allProducts[index].name);
+            $('#productBarcode').val(allProducts[index]._id);
             $('#product_price').val(allProducts[index].price);
             $('#quantity').val(allProducts[index].quantity);
 
@@ -1507,20 +1509,20 @@ if (auth == undefined) {
 
 
                 product_list += `<tr>
-            <td><img id="`+ product._id + `"></td>
+            <td><img id="barcode_${product._id}"></td>
             <td><img style="max-height: 50px; max-width: 50px; border: 1px solid #ddd;" src="${product.img == "" ? "./assets/images/default.jpg" : img_path + product.img}" id="product_img"></td>
             <td>${product.name}</td>
             <td>${settings.symbol}${product.price}</td>
             <td>${product.stock == 1 ? product.quantity : 'N/A'}</td>
             <td>${category.length > 0 ? category[0].name : ''}</td>
-            <td class="nobr"><span class="btn-group"><button onClick="$(this).editProduct(${index})" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteProduct(${product._id})" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></span></td></tr>`;
+            <td class="nobr"><span class="btn-group"><button onClick="$(this).editProduct(${index})" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteProduct('${product._id}')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></span></td></tr>`;
 
                 if (counter == allProducts.length) {
 
                     $('#product_list').html(product_list);
 
                     products.forEach(pro => {
-                        $("#" + pro._id + "").JsBarcode(pro._id, {
+                        $("#barcode_" + pro._id).JsBarcode(pro._id, {
                             width: 2,
                             height: 25,
                             fontSize: 14
