@@ -109,15 +109,24 @@ $.fn.serializeObject = function () {
 };
 
 
-auth = storage.get('auth');
-user = storage.get('user');
+try {
+    auth = storage.get('auth');
+    user = storage.get('user');
+} catch (error) {
+    console.error('Error reading from storage:', error);
+    auth = undefined;
+    user = undefined;
+}
 
 
 if (auth == undefined) {
+    console.log('No auth found, showing login screen');
     $.get(api + 'users/check/', function (data) { });
+    $('#loading').addClass('login-mode'); // Hide "Loading..." text
     authenticate();
 
 } else {
+    console.log('Auth found, loading app for user:', user.fullname);
 
     platform = storage.get('settings');
 
@@ -149,6 +158,9 @@ if (auth == undefined) {
     $(document).ready(function () {
 
         $(".loading").hide();
+
+        // Ensure loading overlay is visible while data loads
+        $('#loading').css('display', 'flex').removeClass('login-mode');
 
         loadCategories();
         loadProducts();
@@ -235,9 +247,15 @@ if (auth == undefined) {
                 });
 
                 // Hide loading screen after products are loaded
+                console.log('Products loaded successfully, showing main app');
                 $('#loading').hide();
                 $('.main_app').addClass('loaded');
 
+            }).fail(function(error) {
+                console.error('Error loading products:', error);
+                // Show main app even if products fail to load
+                $('#loading').hide();
+                $('.main_app').addClass('loaded');
             });
 
         }
@@ -1805,8 +1823,34 @@ if (auth == undefined) {
             }
 
             $("#saveUser").get(0).reset();
+            $('#userRole').val('clerk'); // Default to clerk role
+            setUserRole('clerk'); // Apply clerk permissions by default
             $('#userModal').modal('show');
 
+        });
+
+        // Handle role selection changes
+        $('#userRole').on('change', function() {
+            setUserRole($(this).val());
+        });
+
+        // Function to set permissions based on role
+        function setUserRole(role) {
+            const allPerms = ['#perm_products', '#perm_categories', '#perm_transactions', '#perm_users', '#perm_settings'];
+
+            if (role === 'clerk') {
+                // Clerk: No permissions (POS only)
+                allPerms.forEach(perm => $(perm).prop('checked', false));
+            } else if (role === 'manager') {
+                // Manager: All permissions
+                allPerms.forEach(perm => $(perm).prop('checked', true));
+            }
+            // Custom: Don't change anything, let user select manually
+        }
+
+        // When user manually clicks a permission, switch to "Custom"
+        $('#perm_products, #perm_categories, #perm_transactions, #perm_users, #perm_settings').on('change', function() {
+            $('#userRole').val('custom');
         });
 
 
@@ -2321,11 +2365,25 @@ $('body').on("submit", "#account", function (e) {
             processData: false,
             success: function (data) {
                 if (data._id) {
-                    storage.set('auth', { auth: true });
-                    storage.set('user', data);
-                    ipcRenderer.send('app-reload', '');
+                    console.log('Login successful, saving to storage and reloading...');
+                    try {
+                        storage.set('auth', { auth: true });
+                        storage.set('user', data);
+                        console.log('Storage saved successfully');
+                    } catch (error) {
+                        console.error('Error saving to storage:', error);
+                    }
+                    // Clear login form and show loading state before reload
+                    $('#load').remove();
+                    $('#loading').removeClass('login-mode');
+                    // Small delay to ensure storage is written before reload
+                    setTimeout(() => {
+                        console.log('Sending reload command...');
+                        ipcRenderer.send('app-reload', '');
+                    }, 100);
                 }
                 else {
+                    console.log('Login failed: Invalid credentials');
                     Swal.fire(
                         'Oops!',
                         auth_error,
@@ -2334,7 +2392,7 @@ $('body').on("submit", "#account", function (e) {
                 }
 
             }, error: function (data) {
-                console.log(data);
+                console.error('Login request error:', data);
             }
         });
     }

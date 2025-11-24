@@ -6,6 +6,10 @@ const setupEvents = require('./installers/setupEvents')
 const {app, BrowserWindow, ipcMain, screen} = require('electron');
 const path = require('path')
 const remoteMain = require('@electron/remote/main');
+const Store = require('electron-store');
+
+// Initialize electron-store with IPC support
+Store.initRenderer();
 
 let mainWindow
 let splashWindow
@@ -110,5 +114,11 @@ ipcMain.on('app-quit', (evt, arg) => {
 
 
 ipcMain.on('app-reload', (event, arg) => {
-  mainWindow.reload();
+  if (mainWindow) {
+    mainWindow.reload();
+    // Ensure window is visible after reload
+    if (!mainWindow.isVisible()) {
+      mainWindow.show();
+    }
+  }
 });

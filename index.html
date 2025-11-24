@@ -40,6 +40,9 @@
         color: #666;
         animation: pulse 1.5s ease-in-out infinite;
       }
+      #loading.login-mode::after {
+        display: none;
+      }
       @keyframes pulse {
         0%, 100% { opacity: 0.4; }
         50% { opacity: 1; }
@@ -760,9 +763,21 @@
 
                         <div class="perms">
 
-                            <h4 style="font-size: 22px; margin-top: 20px;">Permissions</h4>
+                            <h4 style="font-size: 22px; margin-top: 20px;">Role & Permissions</h4>
                             <hr>
-    
+
+                            <div class="form-group">
+                                <label for="userRole">User Role</label>
+                                <select name="role" id="userRole" class="form-control">
+                                    <option value="custom">Custom</option>
+                                    <option value="clerk">Clerk (POS Only)</option>
+                                    <option value="manager">Manager (Full Access)</option>
+                                </select>
+                                <small class="text-muted">Clerk: Can only use POS for selling. Manager: Full system access.</small>
+                            </div>
+
+                            <hr>
+
                             <div class="form-group">
                                   <span><input type="checkbox" name="perm_products" id="perm_products"> Manage Products and Stock </span>
                             </div>
@@ -778,7 +793,7 @@
                             <div class="form-group">
                                 <span><input type="checkbox" name="perm_settings" id="perm_settings"> Manage Settings </span>
                             </div>
-    
+
                         </div>
            
                         <input type="submit" class="btn btn-primary btn-block waves-effect waves-light">
