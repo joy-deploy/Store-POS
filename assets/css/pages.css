@@ -162,9 +162,30 @@ margin-right: 30px;
   width: 100vw;
   z-index: 9999;
   overflow: hidden;
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#loading::after {
+  content: 'Loading...';
+  font-size: 24px;
+  font-weight: 600;
+  color: #666;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.main_app {
+  display: none;
+}
+
+.main_app.loaded {
+  display: block;
 }
 
 #quit {

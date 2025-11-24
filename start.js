@@ -8,7 +8,30 @@ const path = require('path')
 const remoteMain = require('@electron/remote/main');
 
 let mainWindow
+let splashWindow
 let server;
+
+function createSplash() {
+  splashWindow = new BrowserWindow({
+    width: 500,
+    height: 350,
+    frame: false,
+    alwaysOnTop: true,
+    center: true,
+    resizable: false,
+    show: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
+    }
+  });
+
+  splashWindow.loadFile('splash.html');
+
+  splashWindow.on('closed', () => {
+    splashWindow = null;
+  });
+}
 
 function createWindow() {
   var primaryDisplay = screen.getPrimaryDisplay();
@@ -19,6 +42,8 @@ function createWindow() {
     frame: false,
     minWidth: 1200,
     minHeight: 750,
+    show: false,
+    backgroundColor: '#dddddd',
 
     webPreferences: {
       nodeIntegration: true,
@@ -29,12 +54,19 @@ function createWindow() {
 
   remoteMain.enable(mainWindow.webContents);
 
-  mainWindow.maximize();
-  mainWindow.show();
-
   mainWindow.loadURL(
     `file://${path.join(__dirname, 'index.html')}`
   )
+
+  mainWindow.once('ready-to-show', () => {
+    setTimeout(() => {
+      if (splashWindow) {
+        splashWindow.close();
+      }
+      mainWindow.maximize();
+      mainWindow.show();
+    }, 500);
+  })
 
   // Open DevTools with F12
   mainWindow.webContents.on('before-input-event', (event, input) => {
@@ -52,7 +84,10 @@ function createWindow() {
 app.on('ready', () => {
   server = require('./server');
   remoteMain.initialize();
-  createWindow();
+  createSplash();
+  setTimeout(() => {
+    createWindow();
+  }, 100);
 })
 
 app.on('window-all-closed', () => {

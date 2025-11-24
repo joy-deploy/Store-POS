@@ -115,12 +115,9 @@ user = storage.get('user');
 
 if (auth == undefined) {
     $.get(api + 'users/check/', function (data) { });
-    $("#loading").show();
     authenticate();
 
 } else {
-
-    $('#loading').css('display', 'flex');
 
     platform = storage.get('settings');
 
@@ -239,6 +236,7 @@ if (auth == undefined) {
 
                 // Hide loading screen after products are loaded
                 $('#loading').hide();
+                $('.main_app').addClass('loaded');
 
             });
 
@@ -1885,7 +1883,7 @@ if (auth == undefined) {
 
     $('#print_list').click(function () {
 
-        $("#loading").show();
+        $("#loading").css('display', 'flex');
 
         $('#productList').DataTable().destroy();
 
