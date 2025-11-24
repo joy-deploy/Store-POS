@@ -77,13 +77,12 @@ $(function () {
         timePickerSeconds: true,
         // minDate: '',
         ranges: {
-            'Today': [moment().startOf('day'), moment()],
-            'Yesterday': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
-            'Last 7 Days': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
-            'Last 30 Days': [moment().subtract(29, 'days').startOf('day'), moment().endOf('day')],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'This Month': [moment().startOf('month'), moment()],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            'Sot': [moment().startOf('day'), moment()],
+            'Dje': [moment().subtract(1, 'days').startOf('day'), moment().subtract(1, 'days').endOf('day')],
+            '7 Ditët e Fundit': [moment().subtract(6, 'days').startOf('day'), moment().endOf('day')],
+            '30 Ditët e Fundit': [moment().subtract(29, 'days').startOf('day'), moment().endOf('day')],
+            'Këtë Muaj': [moment().startOf('month'), moment().endOf('month')],
+            'Muajin e Kaluar': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, cb);
 
@@ -215,7 +214,7 @@ if (auth == undefined) {
                 loadProductList();
 
                 $('#parent').text('');
-                $('#categories').html(`<button type="button" id="all" class="btn btn-categories btn-white waves-effect waves-light">All</button> `);
+                $('#categories').html(`<button type="button" id="all" class="btn btn-categories btn-white waves-effect waves-light">Të Gjitha</button> `);
 
                 data.forEach(item => {
 
@@ -230,7 +229,7 @@ if (auth == undefined) {
                                         <div class="text-muted m-t-5 text-center">
                                         <div class="name" id="product_name">${item.name}</div>
                                         <span class="sku">${item._id}</span>
-                                        <span class="stock">STOCK </span><span class="count">${item.stock == 1 ? item.quantity : 'N/A'}</span></div>
+                                        <span class="stock">STOKU </span><span class="count">${item.stock == 1 ? item.quantity : 'N/A'}</span></div>
                                         <sp class="text-success text-center"><b data-plugin="counterup">${settings.symbol + item.price}</b> </sp>
                             </div>
                         </div>`;
@@ -264,7 +263,7 @@ if (auth == undefined) {
             $.get(api + 'categories/all', function (data) {
                 allCategories = data;
                 loadCategoryList();
-                $('#category').html(`<option value="0">Select</option>`);
+                $('#category').html(`<option value="0">Zgjedh</option>`);
                 allCategories.forEach(category => {
                     $('#category').append(`<option value="${category._id}">${category.name}</option>`);
                 });
@@ -276,7 +275,7 @@ if (auth == undefined) {
 
             $.get(api + 'customers/all', function (customers) {
 
-                $('#customer').html(`<option value="0" selected="selected">Walk in customer</option>`);
+                $('#customer').html(`<option value="0" selected="selected">Klient rastësor</option>`);
 
                 customers.forEach(cust => {
 
@@ -302,17 +301,17 @@ if (auth == undefined) {
                         })
                         .fail(function (jqXHR) {
                             if (jqXHR.status === 404) {
-                                Swal.fire('Product Not Found', 'The product could not be found in the database', 'error');
+                                Swal.fire('Produkti Nuk u Gjet', 'Produkti nuk mund të gjindej në bazën e të dhënave', 'error');
                             } else {
-                                Swal.fire('Error', 'Failed to load product: ' + (jqXHR.responseText || 'Unknown error'), 'error');
+                                Swal.fire('Gabim', 'Dështoi ngarkimi i produktit: ' + (jqXHR.responseText || 'Gabim i panjohur'), 'error');
                             }
                             $("#skuCode").focus();
                         });
                 }
                 else {
                     Swal.fire(
-                        'Out of stock!',
-                        'This item is currently unavailable',
+                        'Jashtë stokut!',
+                        'Ky artikull nuk është i disponueshëm aktualisht',
                         'info'
                     );
                     $("#skuCode").focus();
@@ -326,9 +325,9 @@ if (auth == undefined) {
                     })
                     .fail(function (jqXHR) {
                         if (jqXHR.status === 404) {
-                            Swal.fire('Product Not Found', 'The product could not be found in the database', 'error');
+                            Swal.fire('Produkti Nuk u Gjet', 'Produkti nuk mund të gjindej në bazën e të dhënave', 'error');
                         } else {
-                            Swal.fire('Error', 'Failed to load product: ' + (jqXHR.responseText || 'Unknown error'), 'error');
+                            Swal.fire('Gabim', 'Dështoi ngarkimi i produktit: ' + (jqXHR.responseText || 'Gabim i panjohur'), 'error');
                         }
                         $("#skuCode").focus();
                     });
@@ -369,8 +368,8 @@ if (auth == undefined) {
                     }
                     else if (data.quantity < 1) {
                         Swal.fire(
-                            'Out of stock!',
-                            'This item is currently unavailable',
+                            'Jashtë stokut!',
+                            'Ky artikull nuk është i disponueshëm aktualisht',
                             'info'
                         );
                         $("#searchBarCode").get(0).reset();
@@ -379,8 +378,8 @@ if (auth == undefined) {
                     else {
 
                         Swal.fire(
-                            'Not Found!',
-                            '<b>' + $("#skuCode").val() + '</b> is not a valid barcode!',
+                            'Nuk u Gjet!',
+                            '<b>' + $("#skuCode").val() + '</b> nuk është një kod i vlefshëm!',
                             'warning'
                         );
 
@@ -435,12 +434,12 @@ if (auth == undefined) {
 
         $.fn.addProductToCart = function (data) {
             if (!data || !data._id) {
-                Swal.fire('Error', 'Product not found or invalid product data', 'error');
+                Swal.fire('Gabim', 'Produkti nuk u gjet ose të dhënat e produktit janë të pavlefshme', 'error');
                 return;
             }
 
             if (!data.name || !data.price) {
-                Swal.fire('Error', 'Product is missing required information (name or price)', 'error');
+                Swal.fire('Gabim', 'Produktit i mungojnë informacionet e nevojshme (emri ose çmimi)', 'error');
                 return;
             }
 
@@ -462,7 +461,7 @@ if (auth == undefined) {
                         cartItem.quantity += 1;
                         $(this).renderTable(cart);
                     } else {
-                        Swal.fire('No more stock!', 'You have already added all the available stock.', 'info');
+                        Swal.fire('Nuk ka më stok!', 'Keni shtuar tashmë të gjithë stokun e disponueshëm.', 'info');
                     }
                 } else {
                     // No stock tracking - just increment
@@ -575,13 +574,14 @@ if (auth == undefined) {
 
             if (cart.length > 0) {
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You are about to remove all items from the cart.",
+                    title: 'Jeni i sigurt?',
+                    text: "Jeni duke hequr të gjithë artikujt nga shporta.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, clear it!'
+                    confirmButtonText: 'Po, pastroje!',
+                    cancelButtonText: 'Anulo'
                 }).then((result) => {
 
                     if (result.value) {
@@ -591,8 +591,8 @@ if (auth == undefined) {
                         holdOrder = 0;
 
                         Swal.fire(
-                            'Cleared!',
-                            'All items have been removed.',
+                            'U Pastrua!',
+                            'Të gjithë artikujt janë hequr.',
                             'success'
                         ).then(() => {
                             $("#skuCode").focus();
@@ -611,8 +611,8 @@ if (auth == undefined) {
                 $("#paymentModel").modal('toggle');
             } else {
                 Swal.fire(
-                    'Oops!',
-                    'There is nothing to pay!',
+                    'Ups!',
+                    'Nuk ka asgjë për të paguar!',
                     'warning'
                 );
             }
@@ -627,8 +627,8 @@ if (auth == undefined) {
                 $("#dueModal").modal('toggle');
             } else {
                 Swal.fire(
-                    'Oops!',
-                    'There is nothing to hold!',
+                    'Ups!',
+                    'Nuk ka asgjë për të mbajtur!',
                     'warning'
                 );
             }
@@ -636,7 +636,7 @@ if (auth == undefined) {
 
 
         function printJobComplete() {
-            alert("print job complete");
+            alert("printimi u përfundua");
         }
 
 
@@ -664,32 +664,23 @@ if (auth == undefined) {
             let tax_row = "";
 
 
-            switch (paymentType) {
-
-                case 1: type = "Cheque";
-                    break;
-
-                case 2: type = "Card";
-                    break;
-
-                default: type = "Cash";
-
-            }
+            // Only cash payment accepted
+            type = "Para në dorë";
 
 
             if (paid != "") {
                 payment = `<tr>
-                        <td>Paid</td>
+                        <td>Paguar</td>
                         <td>:</td>
                         <td>${settings.symbol + paid}</td>
                     </tr>
                     <tr>
-                        <td>Change</td>
+                        <td>Kusuri</td>
                         <td>:</td>
                         <td>${settings.symbol + Math.abs(change).toFixed(2)}</td>
                     </tr>
                     <tr>
-                        <td>Method</td>
+                        <td>Metoda</td>
                         <td>:</td>
                         <td>${type}</td>
                     </tr>`
@@ -699,7 +690,7 @@ if (auth == undefined) {
 
             if (settings.charge_tax) {
                 tax_row = `<tr>
-                    <td>Vat(${settings.percentage})% </td>
+                    <td>TVSH(${settings.percentage})% </td>
                     <td>:</td>
                     <td>${settings.symbol}${parseFloat(totalVat).toFixed(2)}</td>
                 </tr>`;
@@ -711,8 +702,8 @@ if (auth == undefined) {
 
                 if ($("#customer").val() == 0 && $("#refNumber").val() == "") {
                     Swal.fire(
-                        'Reference Required!',
-                        'You either need to select a customer <br> or enter a reference!',
+                        'Kërkohet Referenca!',
+                        'Duhet të zgjidhni një klient <br> ose të shkruani një referencë!',
                         'warning'
                     )
 
@@ -747,11 +738,11 @@ if (auth == undefined) {
         <hr>
         <left>
             <p>
-            Order No : ${orderNumber} <br>
-            Ref No : ${refNumber == "" ? orderNumber : refNumber} <br>
-            Customer : ${customer == 0 ? 'Walk in customer' : customer.name} <br>
-            Cashier : ${user.fullname} <br>
-            Date : ${date}<br>
+            Porosia Nr : ${orderNumber} <br>
+            Referenca Nr : ${refNumber == "" ? orderNumber : refNumber} <br>
+            Klienti : ${customer == 0 ? 'Klient rastësor' : customer.name} <br>
+            Arkëtari : ${user.fullname} <br>
+            Data : ${date}<br>
             </p>
 
         </left>
@@ -759,29 +750,29 @@ if (auth == undefined) {
         <table width="100%">
             <thead style="text-align: left;">
             <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price</th>
+                <th>Artikulli</th>
+                <th>Sasia</th>
+                <th>Çmimi</th>
             </tr>
             </thead>
             <tbody>
-            ${items}                
-     
-            <tr>                        
-                <td><b>Subtotal</b></td>
+            ${items}
+
+            <tr>
+                <td><b>Nëntotali</b></td>
                 <td>:</td>
                 <td><b>${settings.symbol}${subTotal.toFixed(2)}</b></td>
             </tr>
             <tr>
-                <td>Discount</td>
+                <td>Zbritje</td>
                 <td>:</td>
                 <td>${discount > 0 ? settings.symbol + parseFloat(discount).toFixed(2) : ''}</td>
             </tr>
-            
+
             ${tax_row}
-        
+
             <tr>
-                <td><h3>Total</h3></td>
+                <td><h3>Totali</h3></td>
                 <td><h3>:</h3></td>
                 <td>
                     <h3>${settings.symbol}${parseFloat(orderTotal).toFixed(2)}</h3>
@@ -833,8 +824,8 @@ if (auth == undefined) {
                 paid: paid,
                 change: change,
                 _id: orderNumber,
-                till: platform.till,
-                mac: platform.mac,
+                till: platform ? platform.till : 1,
+                mac: platform ? platform.mac : '',
                 user: user.fullname,
                 user_id: user._id
             }
@@ -906,14 +897,14 @@ if (auth == undefined) {
                                     $('<b>', { text: 'Ref :' }),
                                     $('<span>', { text: order.ref_number, class: 'ref_number' }),
                                     $('<br>'),
-                                    $('<b>', { text: 'Price :' }),
+                                    $('<b>', { text: 'Çmimi :' }),
                                     $('<span>', { text: order.total, class: "label label-info", style: 'font-size:14px;' }),
                                     $('<br>'),
-                                    $('<b>', { text: 'Items :' }),
+                                    $('<b>', { text: 'Artikujt :' }),
                                     $('<span>', { text: order.items.length }),
                                     $('<br>'),
-                                    $('<b>', { text: 'Customer :' }),
-                                    $('<span>', { text: order.customer != 0 ? order.customer.name : 'Walk in customer', class: 'customer_name' })
+                                    $('<b>', { text: 'Klienti :' }),
+                                    $('<span>', { text: order.customer != 0 ? order.customer.name : 'Klient rastësor', class: 'customer_name' })
                                 ),
                                 $('<button>', { class: 'btn btn-danger del', onclick: '$(this).deleteOrder(' + index + ',' + orderType + ')' }).append(
                                     $('<i>', { class: 'fa fa-trash' })
@@ -954,7 +945,7 @@ if (auth == undefined) {
                 $("#customer option:selected").removeAttr('selected');
 
                 $("#customer option").filter(function () {
-                    return $(this).text() == "Walk in customer";
+                    return $(this).text() == "Klient rastësor";
                 }).prop("selected", true);
 
                 holdOrder = holdOrderList[index]._id;
@@ -1012,13 +1003,14 @@ if (auth == undefined) {
             }
 
             Swal.fire({
-                title: "Delete order?",
-                text: "This will delete the order. Are you sure you want to delete!",
+                title: "Fshi porosinë?",
+                text: "Kjo do të fshijë porosinë. Jeni i sigurt që dëshironi ta fshini!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Po, fshije!',
+                cancelButtonText: 'Anulo'
             }).then((result) => {
 
                 if (result.value) {
@@ -1035,8 +1027,8 @@ if (auth == undefined) {
                             $(this).getCustomerOrders();
 
                             Swal.fire(
-                                'Deleted!',
-                                'You have deleted the order!',
+                                'U Fshi!',
+                                'E keni fshirë porosinë!',
                                 'success'
                             )
 
@@ -1083,7 +1075,7 @@ if (auth == undefined) {
                 processData: false,
                 success: function (data) {
                     $("#newCustomer").modal('hide');
-                    Swal.fire("Customer added!", "Customer added successfully!", "success");
+                    Swal.fire("Klienti u shtua!", "Klienti u shtua me sukses!", "success");
                     $("#customer option:selected").removeAttr('selected');
                     $('#customer').append(
                         $('<option>', { text: custData.name, value: `{"id": ${custData._id}, "name": ${custData.name}}`, selected: 'selected' })
@@ -1093,7 +1085,7 @@ if (auth == undefined) {
 
                 }, error: function (data) {
                     $("#newCustomer").modal('hide');
-                    Swal.fire('Error', 'Something went wrong please try again', 'error')
+                    Swal.fire('Gabim', 'Diçka shkoi keq, ju lutemi provoni përsëri', 'error')
                 }
             })
         })
@@ -1111,8 +1103,8 @@ if (auth == undefined) {
         $("#confirmPayment").on('click', function () {
             if ($('#payment').val() == "") {
                 Swal.fire(
-                    'Nope!',
-                    'Please enter the amount that was paid!',
+                    'Jo!',
+                    'Ju lutemi shkruani shumën që u pagua!',
                     'warning'
                 );
             }
@@ -1182,14 +1174,14 @@ if (auth == undefined) {
 
                     loadProducts();
                     Swal.fire({
-                        title: 'Product Saved',
-                        text: "Select an option below to continue.",
+                        title: 'Produkti u Ruajt',
+                        text: "Zgjidhni një opsion më poshtë për të vazhduar.",
                         icon: 'success',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Add another',
-                        cancelButtonText: 'Close'
+                        confirmButtonText: 'Shto një tjetër',
+                        cancelButtonText: 'Mbyll'
                     }).then((result) => {
 
                         if (!result.value) {
@@ -1224,14 +1216,14 @@ if (auth == undefined) {
                     loadCategories();
                     loadProducts();
                     Swal.fire({
-                        title: 'Category Saved',
-                        text: "Select an option below to continue.",
+                        title: 'Kategoria u Ruajt',
+                        text: "Zgjidhni një opsion më poshtë për të vazhduar.",
                         icon: 'success',
                         showCancelButton: true,
                         confirmButtonColor: '#3085d6',
                         cancelButtonColor: '#d33',
-                        confirmButtonText: 'Add another',
-                        cancelButtonText: 'Close'
+                        confirmButtonText: 'Shto një tjetër',
+                        cancelButtonText: 'Mbyll'
                     }).then((result) => {
 
                         if (!result.value) {
@@ -1346,13 +1338,14 @@ if (auth == undefined) {
 
         $.fn.deleteProduct = function (id) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to delete this product.",
+                title: 'Jeni i sigurt?',
+                text: "Jeni duke fshirë këtë produkt.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Po, fshije!',
+                cancelButtonText: 'Anulo'
             }).then((result) => {
 
                 if (result.value) {
@@ -1363,8 +1356,8 @@ if (auth == undefined) {
                         success: function (result) {
                             loadProducts();
                             Swal.fire(
-                                'Done!',
-                                'Product deleted',
+                                'U Krye!',
+                                'Produkti u fshi',
                                 'success'
                             );
 
@@ -1377,13 +1370,14 @@ if (auth == undefined) {
 
         $.fn.deleteUser = function (id) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to delete this user.",
+                title: 'Jeni i sigurt?',
+                text: "Jeni duke fshirë këtë përdorues.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete!'
+                confirmButtonText: 'Po, fshije!',
+                cancelButtonText: 'Anulo'
             }).then((result) => {
 
                 if (result.value) {
@@ -1394,8 +1388,8 @@ if (auth == undefined) {
                         success: function (result) {
                             loadUserList();
                             Swal.fire(
-                                'Done!',
-                                'User deleted',
+                                'U Krye!',
+                                'Përdoruesi u fshi',
                                 'success'
                             );
 
@@ -1408,13 +1402,14 @@ if (auth == undefined) {
 
         $.fn.deleteCategory = function (id) {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to delete this category.",
+                title: 'Jeni i sigurt?',
+                text: "Jeni duke fshirë këtë kategori.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonText: 'Po, fshije!',
+                cancelButtonText: 'Anulo'
             }).then((result) => {
 
                 if (result.value) {
@@ -1425,8 +1420,8 @@ if (auth == undefined) {
                         success: function (result) {
                             loadCategories();
                             Swal.fire(
-                                'Done!',
-                                'Category deleted',
+                                'U Krye!',
+                                'Kategoria u fshi',
                                 'success'
                             );
 
@@ -1474,9 +1469,9 @@ if (auth == undefined) {
                         state = user.status.split("_");
 
                         switch (state[0]) {
-                            case 'Logged In': class_name = 'btn-default';
+                            case 'I Kyçur': class_name = 'btn-default';
                                 break;
-                            case 'Logged Out': class_name = 'btn-light';
+                            case 'I Shkëputur': class_name = 'btn-light';
                                 break;
                         }
                     }
@@ -1723,8 +1718,8 @@ if (auth == undefined) {
                 if (formData.password != atob(user.password)) {
                     if (formData.password != formData.pass) {
                         Swal.fire(
-                            'Oops!',
-                            'Passwords do not match!',
+                            'Ups!',
+                            'Fjalëkalimet nuk përputhen!',
                             'warning'
                         );
                     }
@@ -1734,8 +1729,8 @@ if (auth == undefined) {
                 if (formData.password != atob(allUsers[user_index].password)) {
                     if (formData.password != formData.pass) {
                         Swal.fire(
-                            'Oops!',
-                            'Passwords do not match!',
+                            'Ups!',
+                            'Fjalëkalimet nuk përputhen!',
                             'warning'
                         );
                     }
@@ -1765,8 +1760,8 @@ if (auth == undefined) {
 
                             $('#Users').modal('show');
                             Swal.fire(
-                                'Ok!',
-                                'User details saved!',
+                                'Në rregull!',
+                                'Detajet e përdoruesit u ruajtën!',
                                 'success'
                             );
                         }
@@ -2021,7 +2016,7 @@ function loadTransactions() {
                                 <td>${settings.symbol + trans.total}</td>
                                 <td>${trans.paid == "" ? "" : settings.symbol + trans.paid}</td>
                                 <td>${trans.change ? settings.symbol + Math.abs(trans.change).toFixed(2) : ''}</td>
-                                <td>${trans.paid == "" ? "" : trans.payment_type == 0 ? "Cash" : 'Card'}</td>
+                                <td>${trans.paid == "" ? "" : "Para në dorë"}</td>
                                 <td>${trans.till}</td>
                                 <td>${trans.user}</td>
                                 <td>${trans.paid == "" ? '<button class="btn btn-dark"><i class="fa fa-search-plus"></i></button>' : '<button onClick="$(this).viewTransaction(' + index + ')" class="btn btn-info"><i class="fa fa-search-plus"></i></button></td>'}</tr>
@@ -2086,8 +2081,8 @@ function loadTransactions() {
         }
         else {
             Swal.fire(
-                'No data!',
-                'No transactions available within the selected criteria',
+                'Nuk ka të dhëna!',
+                'Nuk ka transaksione të disponueshme brenda kritereve të zgjedhura',
                 'warning'
             );
         }
@@ -2147,7 +2142,7 @@ function loadSoldProducts() {
 function userFilter(users) {
 
     $('#users').empty();
-    $('#users').append(`<option value="0">All</option>`);
+    $('#users').append(`<option value="0">Të Gjithë</option>`);
 
     users.forEach(user => {
         let u = allUsers.filter(function (usr) {
@@ -2163,7 +2158,7 @@ function userFilter(users) {
 function tillFilter(tills) {
 
     $('#tills').empty();
-    $('#tills').append(`<option value="0">All</option>`);
+    $('#tills').append(`<option value="0">Të Gjitha</option>`);
     tills.forEach(till => {
         $('#tills').append(`<option value="${till}">${till}</option>`);
     });
@@ -2176,7 +2171,7 @@ $.fn.viewTransaction = function (index) {
     transaction_index = index;
 
     let discount = allTransactions[index].discount;
-    let customer = allTransactions[index].customer == 0 ? 'Walk in Customer' : allTransactions[index].customer.username;
+    let customer = allTransactions[index].customer == 0 ? 'Klient Rastësor' : allTransactions[index].customer.username;
     let refNumber = allTransactions[index].ref_number != "" ? allTransactions[index].ref_number : allTransactions[index].order;
     let orderNumber = allTransactions[index].order;
     let type = "";
@@ -2190,29 +2185,23 @@ $.fn.viewTransaction = function (index) {
     });
 
 
-    switch (allTransactions[index].payment_type) {
-
-        case 2: type = "Card";
-            break;
-
-        default: type = "Cash";
-
-    }
+    // Only cash payment accepted
+    type = "Para në dorë";
 
 
     if (allTransactions[index].paid != "") {
         payment = `<tr>
-                    <td>Paid</td>
+                    <td>Paguar</td>
                     <td>:</td>
                     <td>${settings.symbol + allTransactions[index].paid}</td>
                 </tr>
                 <tr>
-                    <td>Change</td>
+                    <td>Kusuri</td>
                     <td>:</td>
                     <td>${settings.symbol + Math.abs(allTransactions[index].change).toFixed(2)}</td>
                 </tr>
                 <tr>
-                    <td>Method</td>
+                    <td>Metoda</td>
                     <td>:</td>
                     <td>${type}</td>
                 </tr>`
@@ -2222,7 +2211,7 @@ $.fn.viewTransaction = function (index) {
 
     if (settings.charge_tax) {
         tax_row = `<tr>
-                <td>Vat(${settings.percentage})% </td>
+                <td>TVSH(${settings.percentage})% </td>
                 <td>:</td>
                 <td>${settings.symbol}${parseFloat(allTransactions[index].tax).toFixed(2)}</td>
             </tr>`;
@@ -2242,11 +2231,11 @@ $.fn.viewTransaction = function (index) {
     <hr>
     <left>
         <p>
-        Invoice : ${orderNumber} <br>
-        Ref No : ${refNumber} <br>
-        Customer : ${allTransactions[index].customer == 0 ? 'Walk in Customer' : allTransactions[index].customer.name} <br>
-        Cashier : ${allTransactions[index].user} <br>
-        Date : ${moment(allTransactions[index].date).format('DD MMM YYYY HH:mm:ss')}<br>
+        Fatura : ${orderNumber} <br>
+        Referenca Nr : ${refNumber} <br>
+        Klienti : ${allTransactions[index].customer == 0 ? 'Klient Rastësor' : allTransactions[index].customer.name} <br>
+        Arkëtari : ${allTransactions[index].user} <br>
+        Data : ${moment(allTransactions[index].date).format('DD MMM YYYY HH:mm:ss')}<br>
         </p>
 
     </left>
@@ -2254,29 +2243,29 @@ $.fn.viewTransaction = function (index) {
     <table width="100%">
         <thead style="text-align: left;">
         <tr>
-            <th>Item</th>
-            <th>Qty</th>
-            <th>Price</th>
+            <th>Artikulli</th>
+            <th>Sasia</th>
+            <th>Çmimi</th>
         </tr>
         </thead>
         <tbody>
-        ${items}                
- 
-        <tr>                        
-            <td><b>Subtotal</b></td>
+        ${items}
+
+        <tr>
+            <td><b>Nëntotali</b></td>
             <td>:</td>
             <td><b>${settings.symbol}${allTransactions[index].subtotal}</b></td>
         </tr>
         <tr>
-            <td>Discount</td>
+            <td>Zbritje</td>
             <td>:</td>
             <td>${discount > 0 ? settings.symbol + parseFloat(allTransactions[index].discount).toFixed(2) : ''}</td>
         </tr>
-        
+
         ${tax_row}
-    
+
         <tr>
-            <td><h3>Total</h3></td>
+            <td><h3>Totali</h3></td>
             <td><h3>:</h3></td>
             <td>
                 <h3>${settings.symbol}${allTransactions[index].total}</h3>

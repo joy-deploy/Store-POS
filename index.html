@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Point Of Sale</title>
+    <title>Pikë Shitjeje</title>
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/core.css" rel="stylesheet" type="text/css" />
     <link href="assets/css/components.css" rel="stylesheet" type="text/css" />
@@ -34,7 +34,7 @@
         justify-content: center;
       }
       #loading::after {
-        content: 'Loading...';
+        content: 'Po ngarkohet...';
         font-size: 24px;
         font-weight: 600;
         color: #666;
@@ -69,7 +69,7 @@
                         
                             <div class="btn-group p_one">
                             <button id="productModal" data-toggle="modal" data-target="#Products" type="button" class="btn btn-default waves-effect waves-light">
-                                    <span class="btn-label"><i class=" 	glyphicon glyphicon-barcode"></i> </span>  Products   
+                                    <span class="btn-label"><i class="glyphicon glyphicon-barcode"></i> </span> Produktet
                             </button>
                             <button id="newProductModal" data-toggle="modal" data-target="#newProduct" type="button" class="btn btn-warning waves-effect waves-light">
                                     <i class="fa fa-plus"></i> 
@@ -78,7 +78,7 @@
 
                             <div class="btn-group p_two">
                             <button id="categoryModal" data-toggle="modal" data-target="#Categories" type="button" class="btn btn-default waves-effect waves-light">
-                                    <span class="btn-label"><i class="glyphicon glyphicon-th"></i> </span>  Categories   
+                                    <span class="btn-label"><i class="glyphicon glyphicon-th"></i> </span> Kategoritë
                             </button>
                             <button id="newCategoryModal" data-toggle="modal" data-target="#newCategory" type="button" class="btn btn-warning waves-effect waves-light">
                                 <i class="fa fa-plus"></i> 
@@ -86,11 +86,11 @@
                             </div>
                    
                             <button id="viewRefOrders" data-toggle="modal" data-target="#holdOrdersModal" type="button" class="btn btn-info waves-effect waves-light">
-                                    <span class="btn-label"><i class="fa fa-shopping-basket"></i> </span> Open Tabs
+                                    <span class="btn-label"><i class="fa fa-shopping-basket"></i> </span> Porosi të Mbajtura
                             </button>
-            
+
                             <button id="viewCustomerOrders" data-toggle="modal" data-target="#customerModal" type="button" onclick="$(this).getCustomerOrders()" class="btn btn-info waves-effect waves-light">
-                                    <span class="btn-label"><i class="fa fa-user"></i> </span> Customer Orders
+                                    <span class="btn-label"><i class="fa fa-user"></i> </span> Porosi Klientësh
                             </button>
                         
                     </div>
@@ -104,16 +104,16 @@
                           </button>
 
                             <button id="transactions" type="button" class="btn btn-default waves-effect waves-light p_three">
-                            <span class="btn-label"><i class=" 	glyphicon glyphicon-credit-card"></i> </span>  Transactions 
+                            <span class="btn-label"><i class="glyphicon glyphicon-credit-card"></i> </span> Transaksionet
                             </button>
 
                             <button id="pointofsale" type="button" class="btn btn-default waves-effect waves-light">
-                                <span class="btn-label"><i class=" 	glyphicon glyphicon-shopping-cart"></i> </span>  Point of Sale
+                                <span class="btn-label"><i class="glyphicon glyphicon-shopping-cart"></i> </span> Shitje
                             </button>
 
                             <div class="btn-group p_four">
                                 <button id="usersModal" data-toggle="modal" data-target="#Users" type="button" class="btn btn-default waves-effect waves-light">
-                                        <span class="btn-label"><i class=" 	glyphicon glyphicon-user"></i> </span>  Users  
+                                        <span class="btn-label"><i class="glyphicon glyphicon-user"></i> </span> Përdoruesit
                                 </button>
                                 <button id="add-user" data-toggle="modal"   type="button" class="btn btn-dark waves-effect waves-light">
                                         <i class="fa fa-plus"></i> 
@@ -144,27 +144,27 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card-box"> 
-                    <div class="row">               
-                        <h3 class="col-md-2">Transactions</h3> 
+                    <div class="row">
+                        <h3 class="col-md-2">Transaksionet</h3>
                         <div class="col-md-1">
-                            <span>Till</span>
-                            <select id="tills" class="form-control">                              
+                            <span>Arka</span>
+                            <select id="tills" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <span>Cashier</span>
+                            <span>Arkëtari</span>
                             <select id="users" class="form-control">
                             </select>
                         </div>
                         <div class="col-md-1">
-                            <span>Status</span>
+                            <span>Statusi</span>
                             <select id="status" class="form-control status">
-                                <option value="1">Paid</option>
-                                <option value="0">Unpaid</option>
+                                <option value="1">Paguar</option>
+                                <option value="0">Pa Paguar</option>
                             </select>
                         </div>
                         <div class="col-md-3">
-                            <span style="width: 100%;">Date</span>
+                            <span style="width: 100%;">Data</span>
                             <div id="reportrange">
                                 <i class="fa fa-calendar"></i>&nbsp;
                                 <span></span> <i class="fa fa-caret-down"></i>
@@ -178,41 +178,41 @@
                             <div class="col-md-5">
                                 <div class="row">
                                     <div class="col-md-8" id="productSales">
-                                            <h4>Products</h4>
+                                            <h4>Produktet</h4>
                                             <hr>
                                             <table class="table tablesaw-enhanced" id="productsSold">
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
-                                                        <th>Sold</th>
-                                                        <th>Available</th> 
-                                                        <th>Sales</th>                                                                                                           
+                                                        <th>Emri</th>
+                                                        <th>Shitur</th>
+                                                        <th>I Disponueshëm</th>
+                                                        <th>Shitjet</th>                                                                                                           
                                                     </tr>
                                                 </thead>
                                                 <tbody id="product_sales"></tbody>
                                             </table>
                                     </div>
                                     <div class="col-md-4" id="totals">
-                                            <h4>Total</h4>
+                                            <h4>Totali</h4>
                                             <hr>
-                                    
+
                                             <div id="total_sales" class="btn-success">
-                                                <h5>SALES</h5>
+                                                <h5>SHITJET</h5>
                                                 <div id="counter">0</div>
                                             </div>
-                                       
+
                                             <div id="total_transactions" class="btn-warning">
-                                                <h5>TRANSACTIONS</h5>
+                                                <h5>TRANSAKSIONET</h5>
                                                 <div id="counter">0</div>
                                             </div>
-                                
+
                                             <div id="total_items" class="btn-info">
-                                                <h5>ITEMS</h5>
+                                                <h5>ARTIKUJT</h5>
                                                 <div id="counter">0</div>
                                             </div>
 
                                             <div id="total_products" class="btn-default">
-                                                <h5>PRODUCTS</h5>
+                                                <h5>PRODUKTET</h5>
                                                 <div id="counter">0</div>
                                             </div>
                                                                          
@@ -224,16 +224,16 @@
                            <div class="col-md-7">
                             <table class="table tablesaw-enhanced" id="transactionList">
                                 <thead>
-                                    <tr>                                                                      
-                                        <th>Invoice</th>                                      
-                                        <th>Date</th>
-                                        <th>Total</th>
-                                        <th>Paid</th>
-                                        <th>Change</th>
-                                        <th>Method</th>
-                                        <th>Till</th>
-                                        <th>Cashier</th>
-                                        <th>View</th>
+                                    <tr>
+                                        <th>Fatura</th>
+                                        <th>Data</th>
+                                        <th>Totali</th>
+                                        <th>Paguar</th>
+                                        <th>Kusuri</th>
+                                        <th>Metoda</th>
+                                        <th>Arka</th>
+                                        <th>Arkëtari</th>
+                                        <th>Shiko</th>
                                     </tr>
                                 </thead>
                                 <tbody id="transaction_list"></tbody>
@@ -253,7 +253,7 @@
               <div class="card-box" id="card-box" style="padding: 20px;">
                   <!-- Customer Selection -->
                   <div class="form-group">
-                      <label style="font-weight: 600; margin-bottom: 8px;">Customer</label>
+                      <label style="font-weight: 600; margin-bottom: 8px;">Klienti</label>
                       <div class="row">
                           <div class="col-md-10">
                               <select name="" id="customer" class="form-control" style="height: 40px;">
@@ -267,10 +267,10 @@
 
                   <!-- Barcode Scanner -->
                   <div class="form-group">
-                      <label style="font-weight: 600; margin-bottom: 8px;">Scan Product</label>
+                      <label style="font-weight: 600; margin-bottom: 8px;">Skano Produktin</label>
                       <div class="input-group">
                           <form action="" id="searchBarCode" style="width: 100%;">
-                              <input type="text" required id="skuCode" name="skuCode" class="form-control" style="height: 40px;" placeholder="Scan barcode or enter product code" aria-describedby="basic-addon2" autofocus>
+                              <input type="text" required id="skuCode" name="skuCode" class="form-control" style="height: 40px;" placeholder="Skano kodin ose shkruaj kodin e produktit" aria-describedby="basic-addon2" autofocus>
                               <input type="submit" style="display:none;">
                           </form>
                           <span class="input-group-addon" id="basic-addon2" style="height: 40px; padding: 10px 12px;">
@@ -285,9 +285,9 @@
                           <thead style="background-color: #f5f5f5;">
                           <tr>
                               <th style="padding: 8px; width: 40px;">#</th>
-                              <th style="padding: 8px;">Item</th>
-                              <th style="padding: 8px; text-align: center; width: 60px;">Qty</th>
-                              <th style="padding: 8px; text-align: right; width: 100px;">Price</th>
+                              <th style="padding: 8px;">Artikulli</th>
+                              <th style="padding: 8px; text-align: center; width: 60px;">Sasia</th>
+                              <th style="padding: 8px; text-align: right; width: 100px;">Çmimi</th>
                               <th style="padding: 8px; text-align: center; width: 50px;">
                                   <button onclick="$(this).cancelOrder()" class="btn btn-danger btn-xs"><i class="fa fa-times"></i></button>
                               </th>
@@ -302,12 +302,12 @@
                   <!-- Order Summary -->
                   <div style="background-color: #f9f9f9; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
                       <div class="row" style="margin-bottom: 15px;">
-                          <div class="col-md-6" style="font-weight: 600; font-size: 15px;">Total Items:</div>
+                          <div class="col-md-6" style="font-weight: 600; font-size: 15px;">Totali Artikujve:</div>
                           <div class="col-md-6 text-right"><span id="total" style="font-size: 18px; font-weight: 600;">0</span></div>
                       </div>
                       <hr style="margin: 15px 0;">
                       <div class="row">
-                          <div class="col-md-6" style="font-weight: 700; font-size: 17px;">Total (inc <span id="taxInfo"></span>% Tax):</div>
+                          <div class="col-md-6" style="font-weight: 700; font-size: 17px;">Totali (<span id="taxInfo"></span>% TVSH):</div>
                           <div class="col-md-6 text-right">
                               <h3 id="gross_price" style="margin: 0; color: #5fbeaa; font-weight: 700;">0.00</h3>
                           </div>
@@ -333,7 +333,7 @@
                       </div>
                       <div class="col-md-3">
                           <button type="button" id="payButton" class="btn btn-success btn-block waves-effect waves-light" style="padding: 10px; font-weight: 600;">
-                              PAY
+                              PAGUAJ
                           </button>
                       </div>
                   </div>
@@ -343,7 +343,7 @@
               <div class="card-box">
                   <div class="row">
                       <div class="col-md-4">
-                          <input type="text" id="search" class="form-control" placeholder="Search product by name or sku">
+                          <input type="text" id="search" class="form-control" placeholder="Kërko produkt sipas emrit ose kodit">
                       </div>
                       <div class="col-md-8">
                           <div class="" id="categories">
@@ -366,11 +366,11 @@
           <div class="modal-content">
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" id="mySmallModalLabel">Hold Order</h4>
+                  <h4 class="modal-title" id="mySmallModalLabel">Mbaj Porosinë</h4>
               </div>
               <div class="modal-body">
                   <form action="">
-                      <input type="text" id="refNumber" placeholder="Enter a reference" class="form-control">
+                      <input type="text" id="refNumber" placeholder="Shkruaj një referencë" class="form-control">
                   </form>
                   <hr>
                   <div class="row">
@@ -422,7 +422,7 @@
                   </div>
               </div>
               <div class="modal-footer">
-                  <button type="button" onclick="$(this).submitDueOrder(0);" class="btn btn-primary btn-block btn-lg waves-effect waves-light">Hold Order</button>
+                  <button type="button" onclick="$(this).submitDueOrder(0);" class="btn btn-primary btn-block btn-lg waves-effect waves-light">Mbaj Porosinë</button>
               </div>
   
           </div><!-- /.modal-content -->
@@ -434,26 +434,18 @@
           <div class="modal-content">
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" id="myLargeModalLabel">Payment</h4>
+                  <h4 class="modal-title" id="myLargeModalLabel">Pagesa</h4>
               </div>
               <div class="modal-body">
                   <div class="row">
-                      <div class="col-md-4">
-                          <div class="list-group">
-                              <a href="javascript:void(0)" id="cash" onclick="paymentType = 1" class="list-group-item active">
-                                  Cash
-                              </a>
-                            <a href="javascript:void(0)" id="card" onclick="paymentType = 3" class="list-group-item">Card</a>
-                          </div>
-                      </div>
-                      <div class="col-md-8">
+                      <div class="col-md-12">
                           <div class="input-group">
-                              <span class="input-group-addon" id="basic-addon3">Price <span id="price_curr"></span>
+                              <span class="input-group-addon" id="basic-addon3">Çmimi <span id="price_curr"></span>
                               <input id="payablePrice" readonly type="number"  class="form-control" aria-describedby="basic-addon3">
                           </div>
                           <br>
                           <div class="input-group">
-                              <span class="input-group-addon" id="basic-addon3">Payment  <span id="payment_curr"></span> </span>
+                              <span class="input-group-addon" id="basic-addon3">Pagesa  <span id="payment_curr"></span> </span>
                               <input type="text" placeholder="0.0" class="form-control" id="payment" aria-describedby="basic-addon3">
                           </div>
                           <hr>
@@ -515,21 +507,16 @@
                                   <button onclick="$('#payment').val('');$(this).calculateChange();" class="btn btn-danger btn-block btn-lg">AC</button>
                               </div>
                           </div>
-                          <br>
-                          <div class="input-group" id="cardInfo">
-                              <span class="input-group-addon" id="basic-addon3">Card Info </span>
-                              <input type="text" class="form-control" id="paymentInfo" aria-describedby="basic-addon3">
-                          </div>
                       </div>
                   </div>
               </div>
               <div class="modal-footer">
                   <div class="row">
                       <div class="col-md-6">
-                        <div class="btn btn-primary btn-block btn-lg waves-effect waves-light">Change <span id="change_curr"></span><span id="change"></span> </div>
+                        <div class="btn btn-primary btn-block btn-lg waves-effect waves-light">Kusuri <span id="change_curr"></span><span id="change"></span> </div>
                       </div>
                       <div class="col-md-6">
-                        <button type="button" id="confirmPayment" class="btn btn-default btn-block btn-lg waves-effect waves-light">Confirm Payment</button>
+                        <button type="button" id="confirmPayment" class="btn btn-default btn-block btn-lg waves-effect waves-light">Konfirmo Pagesën</button>
                     </div>
                   </div>
                   
@@ -544,25 +531,25 @@
           <div class="modal-content">
               <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                  <h4 class="modal-title" id="mySmallModalLabel">New Customer</h4>
+                  <h4 class="modal-title" id="mySmallModalLabel">Klient i Ri</h4>
               </div>
               <div class="modal-body">
                   <form id="saveCustomer" data-parsley-validate>
                       <div class="form-group">
-                          <label for="userName">Customer Name*</label>
-                          <input type="text" required="required"  name="name" parsley-trigger="change" placeholder="Enter name" class="form-control" id="userName">
+                          <label for="userName">Emri i Klientit*</label>
+                          <input type="text" required="required"  name="name" parsley-trigger="change" placeholder="Shkruaj emrin" class="form-control" id="userName">
                       </div>
                       <div class="form-group">
-                          <label for="userName">Customer Phone</label>
-                          <input type="text" name="phone" parsley-trigger="change" placeholder="Enter Phone number" class="form-control" id="phoneNumber">
+                          <label for="userName">Telefoni i Klientit</label>
+                          <input type="text" name="phone" parsley-trigger="change" placeholder="Shkruaj numrin e telefonit" class="form-control" id="phoneNumber">
                       </div>
                       <div class="form-group">
-                          <label for="userName">Customer Email</label>
-                          <input type="email" name="email" parsley-trigger="change" placeholder="Enter email address" class="form-control" id="emailAddress">
+                          <label for="userName">Emaili i Klientit</label>
+                          <input type="email" name="email" parsley-trigger="change" placeholder="Shkruaj adresën email" class="form-control" id="emailAddress">
                       </div>
                       <div class="form-group">
-                          <label for="userName">Customer Address</label>
-                          <input type="text" name="address" parsley-trigger="change" placeholder="Enter address" class="form-control" id="userAddress">
+                          <label for="userName">Adresa e Klientit</label>
+                          <input type="text" name="address" parsley-trigger="change" placeholder="Shkruaj adresën" class="form-control" id="userAddress">
                       </div>
 
                       <input type="submit" class="btn btn-primary btn-block waves-effect waves-light">
@@ -579,7 +566,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="mySmallModalLabel">Product</h4>
+                    <h4 class="modal-title" id="mySmallModalLabel">Produkti</h4>
                 </div>
                 <div class="modal-body">
                     <form id="saveProduct" encType="multipart/form-data">
@@ -587,31 +574,31 @@
                         <input type="hidden" name="img" id="img">
                         <input type="hidden" name="remove" id="remove_img">
                         <div class="form-group">
-                            <label for="barcode">Barcode / SKU <span class="text-danger">*</span></label>
-                            <input type="text" required="required" name="barcode" placeholder="Scan or enter barcode" class="form-control" id="productBarcode" autofocus>
-                            <small class="text-muted">Scan the product barcode or enter manually</small>
+                            <label for="barcode">Kodi / SKU <span class="text-danger">*</span></label>
+                            <input type="text" required="required" name="barcode" placeholder="Skano ose shkruaj kodin" class="form-control" id="productBarcode" autofocus>
+                            <small class="text-muted">Skano kodin e produktit ose shkruaje manualisht</small>
                         </div>
                         <div class="form-group">
-                            <label for="userName">Category</label>
+                            <label for="userName">Kategoria</label>
                             <select name="category" class="form-control" id="category"></select>
                         </div>
                         <div class="form-group">
-                            <label for="userName">Product Name</label>
-                            <input type="text" required="required"  name="name" parsley-trigger="change" placeholder="Enter a product name" class="form-control" id="productName">
+                            <label for="userName">Emri i Produktit</label>
+                            <input type="text" required="required"  name="name" parsley-trigger="change" placeholder="Shkruaj emrin e produktit" class="form-control" id="productName">
                         </div>
                         <div class="form-group">
-                            <label for="userName">Price</label>
-                            <input type="text" required="required" name="price" placeholder="Price" class="form-control" id="product_price">
+                            <label for="userName">Çmimi</label>
+                            <input type="text" required="required" name="price" placeholder="Çmimi" class="form-control" id="product_price">
                         </div>
                         <div class="form-group">
-                            <label for="userName">Stock</label>
-                            <input type="text" name="quantity" placeholder="Available stock" class="form-control" id="quantity">
+                            <label for="userName">Stoku</label>
+                            <input type="text" name="quantity" placeholder="Stoku i disponueshëm" class="form-control" id="quantity">
                         </div>
                         <div class="form-group">
-                            <label><input type="checkbox" name="stock" id="stock" style="max-width: 30px; float: left;">  Disable stock check </label>
+                            <label><input type="checkbox" name="stock" id="stock" style="max-width: 30px; float: left;">  Çaktivizo kontrollin e stokut </label>
                         </div>
                         <div class="form-group">
-                            <label for="userName"><span id="rmv_img" class="btn btn-xs btn-warning">Remove</span> Picture </label>                      
+                            <label for="userName"><span id="rmv_img" class="btn btn-xs btn-warning">Hiq</span> Foto </label>                      
                             <div id="current_img"></div>
                             <input type="file" name="imagename" id="imagename">                            
                         </div>
@@ -629,14 +616,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="mySmallModalLabel">Category</h4>
+                        <h4 class="modal-title" id="mySmallModalLabel">Kategoria</h4>
                     </div>
                     <div class="modal-body">
                         <form id="saveCategory">
                             <div class="form-group">
-                                <label for="userName">Name</label>
+                                <label for="userName">Emri</label>
                                 <input id="category_id" type="hidden" name="id">
-                                <input id="categoryName" type="text" required="required"  name="name" placeholder="Enter a category name" class="form-control" >
+                                <input id="categoryName" type="text" required="required"  name="name" placeholder="Shkruaj emrin e kategorisë" class="form-control" >
                             </div>
                           
                             <input type="submit" id="submitCategory" class="btn btn-primary btn-block waves-effect waves-light">
@@ -653,21 +640,21 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="mySmallModalLabel">Products
-                            <button class="btn btn-white pull-right" id="print_list">Download</button>
-                        </h4>                        
+                        <h4 class="modal-title" id="mySmallModalLabel">Produktet
+                            <button class="btn btn-white pull-right" id="print_list">Shkarko</button>
+                        </h4>
                     </div>
-                     <div class="modal-body" id="all_products" style="padding: 20px; padding-right: 40px;"> 
+                     <div class="modal-body" id="all_products" style="padding: 20px; padding-right: 40px;">
                         <table class="table table-bordered" id="productList">
                             <thead>
-                                <tr>                                                                      
-                                    <th>Barcode</th>
-                                    <th>Item</th>
-                                    <th>Name</th>                                      
-                                    <th>Price</th>
-                                    <th>Stock</th>
-                                    <th>Category</th>
-                                    <th>Action</th>
+                                <tr>
+                                    <th>Kodi</th>
+                                    <th>Artikulli</th>
+                                    <th>Emri</th>
+                                    <th>Çmimi</th>
+                                    <th>Stoku</th>
+                                    <th>Kategoria</th>
+                                    <th>Veprim</th>
                                 </tr>
                             </thead>
                             <tbody id="product_list"></tbody>
@@ -686,16 +673,16 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="mySmallModalLabel">Users</h4>                        
+                    <h4 class="modal-title" id="mySmallModalLabel">Përdoruesit</h4>
                 </div>
-                 <div class="modal-body" id="all_userss" style="padding: 20px; padding-right: 40px;"> 
+                 <div class="modal-body" id="all_userss" style="padding: 20px; padding-right: 40px;">
                     <table class="table table-bordered" id="userList">
                         <thead>
-                            <tr>                                                                      
-                                <th>Name</th>                                      
-                                <th>Username</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                            <tr>
+                                <th>Emri</th>
+                                <th>Emri i Përdoruesit</th>
+                                <th>Statusi</th>
+                                <th>Veprim</th>
                             </tr>
                         </thead>
                         <tbody id="user_list"></tbody>
@@ -714,14 +701,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="mySmallModalLabel">Categories</h4>
+                        <h4 class="modal-title" id="mySmallModalLabel">Kategoritë</h4>
                     </div>
                     <div class="modal-body">
                         <table class="table table-bordered" id="categoryList">
                             <thead>
-                                <tr> 
-                                    <th>Name</th>                                      
-                                    <th>Action</th>
+                                <tr>
+                                    <th>Emri</th>
+                                    <th>Veprim</th>
                                 </tr>
                             </thead>
                             <tbody id="category_list"></tbody>
@@ -739,59 +726,59 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="mySmallModalLabel">Account Infomarion</h4>
+                    <h4 class="modal-title" id="mySmallModalLabel">Informacioni i Llogarisë</h4>
                 </div>
                 <div class="modal-body">
                     <form id="saveUser" data-parsley-validate>
                         <input type="hidden" name="id" id="user_id">
                         <div class="form-group">
-                            <label for="userName">Name*</label>
-                            <input type="text" required="required"  name="fullname" parsley-trigger="change" placeholder="Enter name" class="form-control" id="fullname">
+                            <label for="userName">Emri*</label>
+                            <input type="text" required="required"  name="fullname" parsley-trigger="change" placeholder="Shkruaj emrin" class="form-control" id="fullname">
                         </div>
                         <div class="form-group">
-                            <label for="userName">Username*</label>
-                            <input type="text" name="username" parsley-trigger="change" placeholder="Login Username" class="form-control" id="username">
+                            <label for="userName">Emri i Përdoruesit*</label>
+                            <input type="text" name="username" parsley-trigger="change" placeholder="Emri i Përdoruesit për hyrje" class="form-control" id="username">
                         </div>
                         <div class="form-group">
-                            <label for="userName">Password</label>
-                            <input type="password" name="password" parsley-trigger="change" placeholder="Password" class="form-control" id="password">
+                            <label for="userName">Fjalëkalimi</label>
+                            <input type="password" name="password" parsley-trigger="change" placeholder="Fjalëkalimi" class="form-control" id="password">
                         </div>
                         <div class="form-group">
-                            <label for="userName">Repeat Password</label>
-                            <input type="password" name="pass" parsley-trigger="change" placeholder="Repeat" class="form-control" id="pass">
+                            <label for="userName">Përsërit Fjalëkalimin</label>
+                            <input type="password" name="pass" parsley-trigger="change" placeholder="Përsërit" class="form-control" id="pass">
                         </div>
 
                         <div class="perms">
 
-                            <h4 style="font-size: 22px; margin-top: 20px;">Role & Permissions</h4>
+                            <h4 style="font-size: 22px; margin-top: 20px;">Roli & Lejet</h4>
                             <hr>
 
                             <div class="form-group">
-                                <label for="userRole">User Role</label>
+                                <label for="userRole">Roli i Përdoruesit</label>
                                 <select name="role" id="userRole" class="form-control">
-                                    <option value="custom">Custom</option>
-                                    <option value="clerk">Clerk (POS Only)</option>
-                                    <option value="manager">Manager (Full Access)</option>
+                                    <option value="custom">Personalizuar</option>
+                                    <option value="clerk">Arkëtar (Vetëm POS)</option>
+                                    <option value="manager">Menaxher (Qasje e Plotë)</option>
                                 </select>
-                                <small class="text-muted">Clerk: Can only use POS for selling. Manager: Full system access.</small>
+                                <small class="text-muted">Arkëtar: Mund të përdorë vetëm POS për shitje. Menaxher: Qasje e plotë në sistem.</small>
                             </div>
 
                             <hr>
 
                             <div class="form-group">
-                                  <span><input type="checkbox" name="perm_products" id="perm_products"> Manage Products and Stock </span>
+                                  <span><input type="checkbox" name="perm_products" id="perm_products"> Menaxho Produktet dhe Stokun </span>
                             </div>
                             <div class="form-group">
-                                <span><input type="checkbox" name="perm_categories" id="perm_categories"> Manage Product Categories </span>
+                                <span><input type="checkbox" name="perm_categories" id="perm_categories"> Menaxho Kategoritë e Produkteve </span>
                           </div>
                           <div class="form-group">
-                            <span><input type="checkbox" name="perm_transactions" id="perm_transactions"> View Transactions </span>
+                            <span><input type="checkbox" name="perm_transactions" id="perm_transactions"> Shiko Transaksionet </span>
                            </div>
                                 <div class="form-group">
-                                    <span><input type="checkbox" name="perm_users" id="perm_users"> Manage Users and Permissions </span>
+                                    <span><input type="checkbox" name="perm_users" id="perm_users"> Menaxho Përdoruesit dhe Lejet </span>
                             </div>
                             <div class="form-group">
-                                <span><input type="checkbox" name="perm_settings" id="perm_settings"> Manage Settings </span>
+                                <span><input type="checkbox" name="perm_settings" id="perm_settings"> Menaxho Cilësimet </span>
                             </div>
 
                         </div>
@@ -812,14 +799,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title" id="myLargeModalLabel">Open Orders</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Porosi të Mbajtura</h4>
             </div>
             <div class="modal-body">
-                <input type="text" id="holdOrderInput" placeholder="Search order by reference" class="holdOrderInput form-control">
+                <input type="text" id="holdOrderInput" placeholder="Kërko porosinë sipas referencës" class="holdOrderInput form-control">
                 <div class="holdOrderKeyboard"></div>
                 <br>
                 <div class="row" style="height: 460px;overflow-x: hidden;overflow-y:scroll" id="randerHoldOrders">
-                    <p>please wait <span class="dot"></span> </p>  
+                    <p>ju lutem prisni <span class="dot"></span> </p>  
                 </div>
             </div>
         </div>
@@ -835,14 +822,14 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title" id="myLargeModalLabel">Customer Orders</h4>
+                <h4 class="modal-title" id="myLargeModalLabel">Porosi Klientësh</h4>
             </div>
             <div class="modal-body">
-                <input type="text" id="holdCustomerOrderInput" placeholder="Search order by customer name" class="holdCustomerOrderInput form-control">
+                <input type="text" id="holdCustomerOrderInput" placeholder="Kërko porosinë sipas emrit të klientit" class="holdCustomerOrderInput form-control">
                 <div class="customerOrderKeyboard"></div>
                 <br>
                 <div class="row" style="height: 460px; overflow: scroll;" id="randerCustomerOrders">
-                    <p>please wait <span class="dot"></span> </p>
+                    <p>ju lutem prisni <span class="dot"></span> </p>
                 </div>
             </div>
         </div>
@@ -856,12 +843,12 @@
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <button class="btn btn-sm btn-default" onclick="$(this).print()">Print</button> <br> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <button class="btn btn-sm btn-default" onclick="$(this).print()">Printo</button> <br> <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
               </div>
-            <div class="modal-body" id="viewTransaction">                 
+            <div class="modal-body" id="viewTransaction">
             </div>
 
-            <div class="alert alert-danger" style="font-size:11px;">Right-Click and Reload if you get stuck after cancelling a print.</div>
+            <div class="alert alert-danger" style="font-size:11px;">Kliko me të djathtë dhe Ringarko nëse ngelesh pasi anulove një printim.</div>
         </div>
     </div>
 </div>
@@ -872,42 +859,42 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                        <h4 class="modal-title" id="mySmallModalLabel">Settings</h4>
+                        <h4 class="modal-title" id="mySmallModalLabel">Cilësimet</h4>
                     </div>
-                    <div class="modal-body">  
-                        
-                        
+                    <div class="modal-body">
+
+
                         <div class="form-group">
-                        <label for="app">Application</label>
+                        <label for="app">Aplikacioni</label>
                         <select name="app" id="app" class="form-control">
-                            <option>Standalone Point of Sale</option>
-                            <option>Network Point of Sale Terminal</option>
-                            <option>Network Point of Sale Server</option>                                            
+                            <option>Pikë Shitjeje e Pavarur</option>
+                            <option>Terminal POS në Rrjet</option>
+                            <option>Server POS në Rrjet</option>
                         </select>
                  </div>
 
                 <form id="net_settings_form">
                  <div class="row">
                     <div class="form-group">
-                        <label for="userName">Server IP Address*</label>
-                        <input type="text" required="required" placeholder="Enter the IP address of the admin computer." name="ip" class="form-control" id="ip">
+                        <label for="userName">Adresa IP e Serverit*</label>
+                        <input type="text" required="required" placeholder="Shkruaj adresën IP të kompjuterit administrativ." name="ip" class="form-control" id="ip">
                     </div>
                     <div class="row">
                             <div class="col-md-5">
                                 <div class="form-group">
-                                    <label for="userName">Till Number*</label>
-                                    <input type="text" required="required" placeholder="Enter a number" name="till" class="form-control" id="till">
+                                    <label for="userName">Numri i Arkës*</label>
+                                    <input type="text" required="required" placeholder="Shkruaj një numër" name="till" class="form-control" id="till">
                                 </div>
                             </div>
                             <div class="col-md-7">
                                 <div class="form-group">
-                                    <label for="userName">Hardware Identification Number </label>
+                                    <label for="userName">Numri Identifikues i Hardware-it </label>
                                     <input type="text" required="required" name="mac" class="form-control" id="mac" readonly="readonly">
                                 </div>
                             </div>
                     </div>
                      <div class="form-group">
-                        <input id="save_settings" type="submit" class="btn btn-default btn-block waves-effect waves-light" value="Save Settings">
+                        <input id="save_settings" type="submit" class="btn btn-default btn-block waves-effect waves-light" value="Ruaj Cilësimet">
                     </div>
                  </div>
                 </form>
@@ -922,25 +909,25 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                               
+
                                  <div class="form-group">
-                                    <label for="userName">Store Name</label>
+                                    <label for="userName">Emri i Dyqanit</label>
                                     <input type="text" required="required"  name="store" class="form-control" id="store">
                                  </div>
                                  <div class="form-group">
-                                        <label for="userName">Address Line 1</label>
+                                        <label for="userName">Adresa Rreshti 1</label>
                                         <input type="text" required="required"  name="address_one" class="form-control" id="address_one">
                                  </div>
                                  <div class="form-group">
-                                        <label for="userName">Address Line 2</label>
+                                        <label for="userName">Adresa Rreshti 2</label>
                                         <input type="text" required="required"  name="address_two" class="form-control" id="address_two">
                                  </div>
                                  <div class="form-group">
-                                        <label for="userName">Contact Number</label>
+                                        <label for="userName">Numri i Kontaktit</label>
                                         <input type="text" name="contact" class="form-control" id="contact">
                                  </div>
                                  <div class="form-group">
-                                        <label for="userName">Vat Number</label>
+                                        <label for="userName">Numri TVSH</label>
                                         <input type="text" name="tax" parsley-trigger="change" class="form-control" id="tax">
                                  </div>
                               
@@ -948,12 +935,12 @@
                             </div>
                             <div class="col-md-6">
                                     <div class="form-group">
-                                            <label for="userName">Currency Symbol</label>
+                                            <label for="userName">Simboli i Monedhës</label>
                                             <input type="text" required="required"  name="symbol" class="form-control" id="symbol">
                                      </div>
-    
+
                                      <div class="form-group">
-                                            <label for="userName">Vat Percentage</label>
+                                            <label for="userName">Përqindja TVSH</label>
                                             <div style="width: 80%; float:left;">
                                             <input type="text" required="required"  name="percentage" class="form-control" id="percentage">
                                             </div>
@@ -961,25 +948,26 @@
                                      </div>
                                      <br><br>
                                      <div class="form-group">
-                                        <label><input type="checkbox" name="charge_tax" id="charge_tax"> Charge Vat</label>
+                                        <label><input type="checkbox" name="charge_tax" id="charge_tax"> Kalo TVSH</label>
                                      </div>
-                                     <div class="form-group">       
-                                        <label for="userName"><span id="rmv_logo" class="btn btn-xs btn-warning">Remove</span> Logo </label>              
-                                        <div id="current_logo"></div>                                        
-                                       
-                                        <input type="file" name="imagename" id="logoname">                            
+                                     <div class="form-group">
+                                        <label for="userName"><span id="rmv_logo" class="btn btn-xs btn-warning">Hiq</span> Logo </label>
+                                        <div id="current_logo"></div>
+
+                                        <input type="file" name="imagename" id="logoname">
                                     </div>
                                     <div class="form-group">
-                                        <label for="userName">Receipt Footer</label>
+                                        <label for="userName">Poshtëshkrimi i Faturës</label>
                                         <textarea name="footer" class="form-control" id="footer"></textarea>
                                     </div>                                    
                             </div>
                            
                         </div>
 
-                       
+
+
                         <div class="form-group">
-                                <input id="save_settings" type="submit" class="btn btn-default btn-block waves-effect waves-light" value="Save Settings">
+                                <input id="save_settings" type="submit" class="btn btn-default btn-block waves-effect waves-light" value="Ruaj Cilësimet">
                         </div>
 
                     </form>
