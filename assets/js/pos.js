@@ -2427,3 +2427,45 @@ $('#quit').click(function () {
 });
 
 
+// Auto-focus barcode scanner input for continuous scanning
+$(function() {
+    // Focus on barcode input when POS view is visible
+    function focusBarcodeInput() {
+        if ($('#pos_view').is(':visible')) {
+            $('#skuCode').focus();
+        }
+    }
+
+    // Focus on page load
+    focusBarcodeInput();
+
+    // Refocus when modals close (especially payment modal)
+    $('.modal').on('hidden.bs.modal', function () {
+        setTimeout(focusBarcodeInput, 100);
+    });
+
+    // Refocus when clicking anywhere in POS view (except on inputs/buttons/modals)
+    $('#pos_view').on('click', function(e) {
+        // Don't refocus if user clicked on an input, button, or link
+        if (!$(e.target).is('input, button, a, select, textarea')) {
+            focusBarcodeInput();
+        }
+    });
+
+    // Keep focus when view switches to POS
+    $('#pointofsale').on('click', function() {
+        setTimeout(focusBarcodeInput, 100);
+    });
+
+    // Refocus after blur, but only if not focusing on another input
+    $(document).on('blur', '#skuCode', function() {
+        setTimeout(function() {
+            // Only refocus if no other input is focused
+            if (!$('input:focus, textarea:focus, select:focus').length && $('#pos_view').is(':visible')) {
+                focusBarcodeInput();
+            }
+        }, 100);
+    });
+});
+
+
