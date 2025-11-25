@@ -8,7 +8,7 @@ const path = require('path')
 const remoteMain = require('@electron/remote/main');
 const Store = require('electron-store');
 
-// Initialize electron-store with IPC support
+// Initialize electron-store with IPC support for renderer processes (v8 API)
 Store.initRenderer();
 
 let mainWindow

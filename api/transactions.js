@@ -101,15 +101,16 @@ app.get("/by-date", function(req, res) {
 
 app.post("/new", function(req, res) {
   let newTransaction = req.body;
-  transactionsDB.insert(newTransaction, function(err, transaction) {    
+  transactionsDB.insert(newTransaction, function(err, transaction) {
     if (err) res.status(500).send(err);
     else {
      res.sendStatus(200);
 
-     if(newTransaction.paid >= newTransaction.total){
+     // Parse as numbers to ensure correct comparison (strings would fail lexicographic comparison)
+     if(parseFloat(newTransaction.paid) >= parseFloat(newTransaction.total)){
         Inventory.decrementInventory(newTransaction.items);
      }
-     
+
     }
   });
 });

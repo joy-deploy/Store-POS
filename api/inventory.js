@@ -162,18 +162,25 @@ app.post( "/product", upload.single('imagename'), function ( req, res ) {
 
  
 app.delete( "/product/:productId", function ( req, res ) {
-    // Keep as string if it starts with 0 or contains non-numeric chars (preserves barcodes like "00049000061017")
-    const productId = (req.params.productId.startsWith('0') || isNaN(req.params.productId))
-        ? req.params.productId
-        : parseInt(req.params.productId);
-
+    // Try to delete by exact match first (string), then try parseInt (for numeric IDs)
     inventoryDB.remove( {
-        _id: productId
+        _id: req.params.productId
     }, function ( err, numRemoved ) {
         if ( err ) {
             res.status( 500 ).send( err );
         } else if (numRemoved === 0) {
-            res.status( 404 ).send( "Product not found" );
+            // Not found as string, try with parseInt for backwards compatibility
+            inventoryDB.remove( {
+                _id: parseInt(req.params.productId)
+            }, function ( err, numRemoved ) {
+                if ( err ) {
+                    res.status( 500 ).send( err );
+                } else if (numRemoved === 0) {
+                    res.status( 404 ).send( "Product not found" );
+                } else {
+                    res.sendStatus( 200 );
+                }
+            } );
         } else {
             res.sendStatus( 200 );
         }
