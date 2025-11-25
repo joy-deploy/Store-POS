@@ -1,7 +1,7 @@
 const app = require( "express" )();
 const server = require( "http" ).Server( app );
 const bodyParser = require( "body-parser" );
-const Datastore = require( "nedb" );
+const Datastore = require( "@seald-io/nedb" );
 const async = require( "async" );
 const fileUpload = require('express-fileupload');
 const multer = require("multer");
@@ -27,9 +27,12 @@ module.exports = app;
 
 let inventoryDB = new Datastore( {
     filename: path.join(dbPath, 'inventory.db'),
-    autoload: true
+    autoload: true,
+    timestampData: true
 } );
 
+// Enable auto-compaction to ensure data persists to disk (important for Windows)
+inventoryDB.persistence.setAutocompactionInterval(10000); // Compact every 10 seconds
 
 inventoryDB.ensureIndex({ fieldName: '_id', unique: true });
 
@@ -44,20 +47,27 @@ app.get( "/product/:productId", function ( req, res ) {
     if ( !req.params.productId ) {
         res.status( 500 ).send( "ID field is required." );
     } else {
-        // Keep as string if it starts with 0 or contains non-numeric chars (preserves barcodes like "00049000061017")
-        const productId = (req.params.productId.startsWith('0') || isNaN(req.params.productId))
-            ? req.params.productId
-            : parseInt(req.params.productId);
-
+        // Try to find by exact match first (string), then try parseInt (for numeric IDs)
         inventoryDB.findOne( {
-            _id: productId
+            _id: req.params.productId
         }, function ( err, product ) {
             if (err) {
                 res.status( 500 ).send( err );
-            } else if (!product) {
-                res.status( 404 ).send( "Product not found" );
-            } else {
+            } else if (product) {
                 res.send( product );
+            } else {
+                // Try with parseInt for backwards compatibility with numeric IDs
+                inventoryDB.findOne( {
+                    _id: parseInt(req.params.productId)
+                }, function ( err, product ) {
+                    if (err) {
+                        res.status( 500 ).send( err );
+                    } else if (!product) {
+                        res.status( 404 ).send( "Product not found" );
+                    } else {
+                        res.send( product );
+                    }
+                } );
             }
         } );
     }
@@ -99,15 +109,18 @@ app.post( "/product", upload.single('imagename'), function ( req, res ) {
         }
     }
     
-    // Determine product ID - preserve string barcodes with leading zeros
+    // Determine product ID - ALWAYS preserve barcodes as strings
     let productId = null;
-    if (req.body.id) {
-        // Keep as string if it starts with 0 or is explicitly a string barcode
+
+    // Check barcode first - if provided, always use as-is (string)
+    if (req.body.barcode) {
+        productId = req.body.barcode; // Always use barcode as-is (string)
+    } else if (req.body.id) {
+        // Only convert to number if it's NOT a barcode (i.e., no barcode field provided)
+        // Keep as string if it starts with 0 or is explicitly a string
         productId = (req.body.id.startsWith('0') || isNaN(req.body.id))
             ? req.body.id
             : parseInt(req.body.id);
-    } else if (req.body.barcode) {
-        productId = req.body.barcode; // Always use barcode as-is (string)
     }
 
     let Product = {
@@ -194,19 +207,41 @@ app.post( "/product/sku", function ( req, res ) {
 app.decrementInventory = function ( products ) {
 
     async.eachSeries( products, function ( transactionProduct, callback ) {
-        // Keep as string if it starts with 0 or contains non-numeric chars (preserves barcodes)
-        const productId = (typeof transactionProduct.id === 'string' && transactionProduct.id.startsWith('0')) || isNaN(transactionProduct.id)
-            ? transactionProduct.id
-            : parseInt(transactionProduct.id);
-
+        // Try to find product by exact ID match first (preserves string/number type)
         inventoryDB.findOne( {
-            _id: productId
+            _id: transactionProduct.id
         }, function (
             err,
             product
         ) {
 
-            if ( !product || !product.quantity ) {
+            // If not found and ID is numeric-looking, try with parseInt
+            if ( !product && !isNaN(transactionProduct.id) ) {
+                inventoryDB.findOne( {
+                    _id: parseInt(transactionProduct.id)
+                }, function (
+                    err,
+                    product
+                ) {
+                    if ( !product || !product.quantity ) {
+                        callback();
+                    } else {
+                        let updatedQuantity =
+                            parseInt( product.quantity) -
+                            parseInt( transactionProduct.quantity );
+
+                        inventoryDB.update( {
+                                _id: product._id
+                            }, {
+                                $set: {
+                                    quantity: updatedQuantity
+                                }
+                            }, {},
+                            callback
+                        );
+                    }
+                } );
+            } else if ( !product || !product.quantity ) {
                 callback();
             } else {
                 let updatedQuantity =

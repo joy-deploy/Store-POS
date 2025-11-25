@@ -143,8 +143,18 @@ if (auth == undefined) {
     });
 
 
+    let settingsLoaded = false;
+    let domReady = false;
+    let loadProductsFunc = null;
+
     $.get(api + 'settings/get', function (data) {
         settings = data.settings;
+        settingsLoaded = true;
+
+        // Load products only after both settings and DOM are ready
+        if (domReady && loadProductsFunc) {
+            initializeAfterSettings();
+        }
     });
 
 
@@ -152,6 +162,20 @@ if (auth == undefined) {
         allUsers = [...users];
     });
 
+    function initializeAfterSettings() {
+        if (settings && settings.symbol) {
+            $("#price_curr, #payment_curr, #change_curr").text(settings.symbol);
+        }
+
+        if (settings) {
+            vat = parseFloat(settings.percentage);
+            $("#taxInfo").text(settings.charge_tax ? vat : 0);
+        }
+
+        if (loadProductsFunc) {
+            loadProductsFunc();
+        }
+    }
 
 
     $(document).ready(function () {
@@ -162,24 +186,15 @@ if (auth == undefined) {
         $('#loading').css('display', 'flex').removeClass('login-mode');
 
         loadCategories();
-        loadProducts();
         loadCustomers();
 
-
-        if (settings && settings.symbol) {
-            $("#price_curr, #payment_curr, #change_curr").text(settings.symbol);
-        }
+        domReady = true;
 
 
         setTimeout(function () {
             if (settings == undefined && auth != undefined) {
                 $('#settingsModal').modal('show');
             }
-            else {
-                vat = parseFloat(settings.percentage);
-                $("#taxInfo").text(settings.charge_tax ? vat : 0);
-            }
-
         }, 1500);
 
 
@@ -230,7 +245,7 @@ if (auth == undefined) {
                                         <div class="name" id="product_name">${item.name}</div>
                                         <span class="sku">${item._id}</span>
                                         <span class="stock">STOKU </span><span class="count">${item.stock == 1 ? item.quantity : 'N/A'}</span></div>
-                                        <sp class="text-success text-center"><b data-plugin="counterup">${settings.symbol + item.price}</b> </sp>
+                                        <sp class="text-success text-center"><b data-plugin="counterup">${(settings ? settings.symbol : '€') + item.price}</b> </sp>
                             </div>
                         </div>`;
                     $('#parent').append(item_info);
@@ -257,6 +272,12 @@ if (auth == undefined) {
                 $('.main_app').addClass('loaded');
             });
 
+        }
+
+        // Store reference to loadProducts and initialize if settings are already loaded
+        loadProductsFunc = loadProducts;
+        if (settingsLoaded) {
+            initializeAfterSettings();
         }
 
         function loadCategories() {
@@ -1523,7 +1544,7 @@ if (auth == undefined) {
             <td><img id="barcode_${product._id}"></td>
             <td><img style="max-height: 50px; max-width: 50px; border: 1px solid #ddd;" src="${product.img == "" ? "./assets/images/default.jpg" : img_path + product.img}" id="product_img"></td>
             <td>${product.name}</td>
-            <td>${settings.symbol}${product.price}</td>
+            <td>${settings ? settings.symbol : '€'}${product.price}</td>
             <td>${product.stock == 1 ? product.quantity : 'N/A'}</td>
             <td>${category.length > 0 ? category[0].name : ''}</td>
             <td class="nobr"><span class="btn-group"><button onClick="$(this).editProduct(${index})" class="btn btn-warning btn-sm"><i class="fa fa-edit"></i></button><button onClick="$(this).deleteProduct('${product._id}')" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button></span></td></tr>`;
